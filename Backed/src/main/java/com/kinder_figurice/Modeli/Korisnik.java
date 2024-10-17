@@ -39,6 +39,9 @@ public class Korisnik {
     @Column
     private String slikaKorisnika;
 
+    @Column
+    private Boolean aktivanKorisnik = true;
+
     ////One koje je srcnuo
     @OneToMany
     @JoinTable(name = "wishlist",

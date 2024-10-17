@@ -1,6 +1,5 @@
 package com.kinder_figurice.DataTransferModeli;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,14 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KorisnikDTO {
-
-
-    /// Ovo ce da nam bude DTO za slanje podataka medju korisnicima, clean
-
-
-    private String ime;
-    private String prezime;
+public class LoginDTO {
     private String email;
-    private String slikaKorisnika;
+    private String lozinka;
 }

@@ -25,7 +25,7 @@ public class Mapper {
     // Mapiranje Korisnik u KorisnikDTO
     public static KorisnikDTO toDTO(Korisnik korisnik) {
         KorisnikDTO korisnikDTO = new KorisnikDTO();
-        korisnikDTO.setIdKorisnika(korisnik.getIdKorisnika());
+
         korisnikDTO.setIme(korisnik.getIme());
         korisnikDTO.setPrezime(korisnik.getPrezime());
         korisnikDTO.setEmail(korisnik.getEmail());
@@ -36,7 +36,7 @@ public class Mapper {
     // Mapiranje FiguricaDTO u Figurica
     public static Figurica toEntity(FiguricaDTO figuricaDTO, Korisnik korisnik) {
         Figurica figurica = new Figurica();
-        figurica.setIdFigurice(figuricaDTO.getIdFigurice());
+
         figurica.setNazivFigurice(figuricaDTO.getNazivFigurice());
         figurica.setSerijaFigurice(figuricaDTO.getSerijaFigurice());
         figurica.setGodinaIzdanja(figuricaDTO.getGodinaIzdanja());
@@ -51,7 +51,7 @@ public class Mapper {
 
     public static FiguricaDTO toDTO(Figurica figurica) {
         FiguricaDTO figuricaDTO = new FiguricaDTO();
-        figuricaDTO.setIdFigurice(figurica.getIdFigurice());
+
         figuricaDTO.setNazivFigurice(figurica.getNazivFigurice());
         figuricaDTO.setSerijaFigurice(figurica.getSerijaFigurice());
         figuricaDTO.setGodinaIzdanja(figurica.getGodinaIzdanja());

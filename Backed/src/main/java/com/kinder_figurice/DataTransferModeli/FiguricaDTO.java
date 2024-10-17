@@ -13,7 +13,7 @@ public class FiguricaDTO {
 
 
 
-        private Long idFigurice;
+
         private String nazivFigurice;
         private String serijaFigurice;
         private String godinaIzdanja;
