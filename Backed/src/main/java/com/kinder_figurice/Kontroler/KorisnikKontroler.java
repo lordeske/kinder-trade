@@ -49,7 +49,87 @@ public class KorisnikKontroler {
     }
 
 
-    @GetMapping
+    @GetMapping("/korisnik/{idKorisnika}")
+    public ResponseEntity<KorisnikDTO> prikaziKorisnika(@PathVariable Long idKorisnika) {
+        return ResponseEntity.ok().body(korisnikService.prikaziProfilKorisnika(idKorisnika));
+    }
+
+
+    @PutMapping("/azurirajKorisnika/{idKorisnika}")
+    public ResponseEntity<KorisnikDTO> azurirajProfilKorisnika(
+            @PathVariable Long idKorisnika,
+            @RequestBody KorisnikDTO korisnikDTO)
+    {
+        KorisnikDTO azuriraniKorisnik = korisnikService.azurirajProfil(idKorisnika,korisnikDTO);
+
+        if(azuriraniKorisnik!=null)
+        {
+            return ResponseEntity.ok(azuriraniKorisnik);
+        }
+        else
+        {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+    @PutMapping("/azurirajLozinku/{idKorisnika}")
+    public ResponseEntity<KorisnikDTO> azurirajLozinku(
+            @PathVariable Long idKorisnika,
+            @RequestBody String novaLozinka
+    )
+    {
+        KorisnikDTO korisnikDTO = korisnikService.azurirajLozinku(idKorisnika, novaLozinka);
+
+        if(korisnikDTO!=null)
+        {
+            return ResponseEntity.ok(korisnikDTO);
+        }
+        else
+        {
+            return  ResponseEntity.notFound().build();
+        }
+    }
+
+
+
+    @PutMapping("/azurirajSliku/{idKorisnika}")
+    public ResponseEntity<String> azurirajSliku(
+            @PathVariable Long idKorisnika,
+            @RequestBody String novaSlika
+    )
+    {
+        try {
+            korisnikService.promijeniSliku(idKorisnika, novaSlika);
+            return ResponseEntity.ok().build();
+        }
+        catch (Exception e)
+        {
+            return ResponseEntity.status(500).body("Greska prilikom azuriranja slike");
+        }
+
+
+
+    }
+
+
+    @PutMapping("/azurirajStatus")
+    public ResponseEntity<String> azurirajStatusKorisnika(
+            @RequestBody Long idKorisnika
+
+    )
+    {
+        try {
+            korisnikService.promijeniStatusKorisnika(idKorisnika);
+            return ResponseEntity.ok().body("Uspesno promenjen status");
+        }
+        catch (Exception e)
+        {
+            return ResponseEntity.status(404).body("Desila se greska");
+        }
+
+
+    }
 
 
 
