@@ -7,9 +7,13 @@ import com.kinder_figurice.Modeli.Korisnik;
 import com.kinder_figurice.Repo.FiguricaRepo;
 import com.kinder_figurice.Repo.KorisnikRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,9 +24,9 @@ public class FiguricaService {
 
 
     @Autowired
-    private static FiguricaRepo figuricaRepo;
+    private  FiguricaRepo figuricaRepo;
     @Autowired
-    private static KorisnikRepo korisnikRepo;
+    private  KorisnikRepo korisnikRepo;
 
 
     public Figurica kreirajFiguricu(FiguricaDTO figuricaDTO, Long idKorisnika)
@@ -48,23 +52,23 @@ public class FiguricaService {
         figuricaRepo.deleteById(idFigurice);
     }
 
-    public List<FiguricaDTO> vratiFiguriceZaKorisnika(Long idKorisnika)
-    {
-        List<Figurica> dobijeneFigurice = figuricaRepo.findByIdKorisnika(idKorisnika);
+    public List<FiguricaDTO> vratiFiguriceZaKorisnika(Long idKorisnika) {
 
-        List<FiguricaDTO> figuriceDTO = new ArrayList<>();
+        Optional<Korisnik> korisnik = korisnikRepo.findById(idKorisnika);
 
-
-        for(Figurica figurica : dobijeneFigurice )
+        if (korisnik.isPresent())
         {
-            figuriceDTO.add(Mapper.toDTO(figurica));
+            List<Figurica> figurice = figuricaRepo.findByKorisnik(korisnik.get());
+
+            return figurice.stream()
+                    .map(Mapper::toDTO)
+                    .collect(Collectors.toList());
         }
-
-        return  figuriceDTO;
-
-
-
+        return Collections.emptyList();
     }
+
+
+
 
 
 
