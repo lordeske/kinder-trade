@@ -6,6 +6,7 @@ import com.kinder_figurice.DataTransferModeli.KorisnikRegistracijaDTO;
 import com.kinder_figurice.DataTransferModeli.LoginDTO;
 import com.kinder_figurice.ModelMapper.Mapper;
 import com.kinder_figurice.Modeli.Korisnik;
+import com.kinder_figurice.Repo.FiguricaRepo;
 import com.kinder_figurice.Repo.KorisnikRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,12 +21,14 @@ public class KorisnikService {
 
     private final KorisnikRepo korisnikRepo;
     private final PasswordEncoder passwordEncoder;
+    private final FiguricaRepo figuricaRepo;
 
 
     @Autowired
-    public KorisnikService(KorisnikRepo korisnikRepo, PasswordEncoder passwordEncoder) {
+    public KorisnikService(KorisnikRepo korisnikRepo, PasswordEncoder passwordEncoder, FiguricaRepo figuricaRepo) {
         this.korisnikRepo = korisnikRepo;
         this.passwordEncoder = passwordEncoder;
+        this.figuricaRepo = figuricaRepo;
     }
 
 
@@ -33,10 +36,7 @@ public class KorisnikService {
     {
         /// Autentifikacije ce kasnije biti ubacena, naknadno
 
-        Korisnik korisnik = new Korisnik();
-        korisnik.setIme(korisnikRegistracijaDTO.getIme());
-        korisnik.setPrezime(korisnikRegistracijaDTO.getPrezime());
-        korisnik.setEmail(korisnikRegistracijaDTO.getEmail());
+        Korisnik korisnik = Mapper.toEntity(korisnikRegistracijaDTO);
         korisnik.setLozinka(passwordEncoder.encode(korisnikRegistracijaDTO.getLozinka()));
         return korisnikRepo.save(korisnik);
     }
@@ -138,6 +138,9 @@ public class KorisnikService {
 
         }
     }
+
+
+    public
 
 
 

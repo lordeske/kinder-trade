@@ -8,8 +8,9 @@ import com.kinder_figurice.Servisi.KorisnikService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/korisnici")
@@ -115,10 +116,11 @@ public class KorisnikKontroler {
 
     @PutMapping("/azurirajStatus")
     public ResponseEntity<String> azurirajStatusKorisnika(
-            @RequestBody Long idKorisnika
+            @RequestBody Map<String, Long> payload
 
-    )
+            )
     {
+        Long idKorisnika = payload.get("idKorisnika");
         try {
             korisnikService.promijeniStatusKorisnika(idKorisnika);
             return ResponseEntity.ok().body("Uspesno promenjen status");

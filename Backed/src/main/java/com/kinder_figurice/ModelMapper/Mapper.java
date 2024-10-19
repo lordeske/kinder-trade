@@ -57,11 +57,8 @@ public class Mapper {
         figuricaDTO.setGodinaIzdanja(figurica.getGodinaIzdanja());
         figuricaDTO.setOpisFigurice(figurica.getOpisFigurice());
         figuricaDTO.setSlikaFigurice(figurica.getSlikaFigurice());
+        figuricaDTO.setIdKorisnika(figurica.getKorisnik().getIdKorisnika());
 
-        // Dodavanje ID korisnika
-        if (figurica.getKorisnik() != null) {
-            figuricaDTO.setIdKorisnika(figurica.getKorisnik().getIdKorisnika());
-        }
 
         return figuricaDTO;
     }

@@ -14,8 +14,5 @@ public class KinderFiguriceApplication {
 	}
 
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+
 }
