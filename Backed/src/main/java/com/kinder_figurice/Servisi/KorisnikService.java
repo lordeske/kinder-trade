@@ -5,9 +5,11 @@ import com.kinder_figurice.DataTransferModeli.KorisnikDTO;
 import com.kinder_figurice.DataTransferModeli.KorisnikRegistracijaDTO;
 import com.kinder_figurice.DataTransferModeli.LoginDTO;
 import com.kinder_figurice.ModelMapper.Mapper;
+import com.kinder_figurice.Modeli.Figurica;
 import com.kinder_figurice.Modeli.Korisnik;
 import com.kinder_figurice.Repo.FiguricaRepo;
 import com.kinder_figurice.Repo.KorisnikRepo;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -140,6 +142,82 @@ public class KorisnikService {
     }
 
 
+    public Korisnik dodajFiguricuUWishList(Long idKorisnika, Long idFigurice)
+    {
+
+        Optional<Korisnik> korisnik = korisnikRepo.findById(idKorisnika);
+        Optional<Figurica> figurica = figuricaRepo.findById(idFigurice);
+
+        if(!korisnik.isPresent())
+        {
+            throw new EntityNotFoundException("Korisnik nije pronađen.");
+        }
+
+        if (!figurica.isPresent()) {
+            throw new EntityNotFoundException("Figurica nije pronađena.");
+        }
+
+        Korisnik korisnik1 = korisnik.get();
+        Figurica figurica1 = figurica.get();
+
+
+            if(!korisnik1.getWishList().contains(figurica1))
+            {
+                korisnik1.getWishList().add(figurica1);
+                return korisnikRepo.save(korisnik1);
+            }
+            else
+            {
+                throw new IllegalArgumentException("Figurica je već u wishlisti");
+            }
+
+
+
+
+
+
+    }
+
+
+
+    public Korisnik izbrisiFiguricuIzWishList(Long idKorisnika, Long idFigurice)
+    {
+
+        Optional<Korisnik> korisnik = korisnikRepo.findById(idKorisnika);
+        Optional<Figurica> figurica = figuricaRepo.findById(idFigurice);
+
+
+        if(!korisnik.isPresent())
+        {
+            throw new EntityNotFoundException("Korisnik nije pronađen.");
+        }
+
+        if (!figurica.isPresent()) {
+            throw new EntityNotFoundException("Figurica nije pronađena.");
+        }
+
+
+            Korisnik korisnik1 = korisnik.get();
+            Figurica figurica1 = figurica.get();
+
+            if(korisnik1.getWishList().contains(figurica1))
+            {
+                korisnik1.getWishList().remove(figurica1);
+                return korisnikRepo.save(korisnik1);
+            }
+            else
+            {
+                throw new IllegalArgumentException("Figurica nije pronađena u wishlisti korisnika");
+            }
+
+
+
+
+
+
+
+
+    }
 
 
 

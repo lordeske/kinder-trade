@@ -6,6 +6,7 @@ import com.kinder_figurice.DataTransferModeli.LoginDTO;
 import com.kinder_figurice.Modeli.Korisnik;
 import com.kinder_figurice.Servisi.KorisnikService;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -132,6 +133,50 @@ public class KorisnikKontroler {
 
 
     }
+
+    @PostMapping("/wishlist/{idKorisnika}/{idFigurice}")
+    public ResponseEntity<String> azurirajWishList(
+            @PathVariable Long idKorisnika,
+            @PathVariable Long idFigurice
+    )
+    {
+        try
+        {
+            Korisnik korisnik = korisnikService.dodajFiguricuUWishList(idKorisnika, idFigurice);
+            return ResponseEntity.status(200).body("Figurica uspešno dodata u wishlist.");
+        }
+        catch (EntityNotFoundException e)
+        {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+        catch (Exception e)
+        {
+            return ResponseEntity.status(404).body("Desila se greska");
+        }
+
+
+
+    }
+
+    @DeleteMapping("/wishlist/{idKorisnika}/{idFigurice}")
+    public ResponseEntity<String> izbrisiFiguricuIzWishList(
+            @PathVariable Long idKorisnika,
+            @PathVariable Long idFigurice
+    )
+    {
+        try {
+            Korisnik korisnik = korisnikService.izbrisiFiguricuIzWishList(idKorisnika, idFigurice);
+            return ResponseEntity.status(200).body("Figurica uspešno uklonjena iz wishlist.");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Došlo je do greške prilikom uklanjanja figurice iz wishlist.");
+        }
+
+
+
+    }
+
 
 
 

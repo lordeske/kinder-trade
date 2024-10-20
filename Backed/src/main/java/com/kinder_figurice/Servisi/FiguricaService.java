@@ -68,6 +68,32 @@ public class FiguricaService {
     }
 
 
+    public FiguricaDTO azurirajFiguricu(Long idFigurice, FiguricaDTO figuricaDTO) throws Exception {
+            Optional<Figurica> figurica = figuricaRepo.findById(idFigurice);
+
+            if(figurica.isPresent())
+            {
+                Figurica dobijenaFigurica = figurica.get();
+                dobijenaFigurica.setNazivFigurice(figuricaDTO.getNazivFigurice());
+                dobijenaFigurica.setSerijaFigurice(figuricaDTO.getSerijaFigurice());
+                dobijenaFigurica.setGodinaIzdanja(figuricaDTO.getGodinaIzdanja());
+                dobijenaFigurica.setOpisFigurice(figuricaDTO.getOpisFigurice());
+                dobijenaFigurica.setSlikaFigurice(figuricaDTO.getSlikaFigurice());
+                figuricaRepo.save(dobijenaFigurica);
+
+                return Mapper.toDTO(dobijenaFigurica);
+
+            }
+            else
+            {
+                throw  new Exception("Nije pronadjena figurcia");
+            }
+
+
+
+    }
+
+
 
 
 

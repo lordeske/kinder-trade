@@ -38,33 +38,43 @@ public class FiguricaKontroler {
 
 
     @GetMapping("/{idFigurice}")
-    private ResponseEntity<FiguricaDTO> prikaziFiguricu(
-            @PathVariable Map<String, Long> paylaod
-            )
-    {
-         Long idFigurice = paylaod.get("idFigurice");
-
+    public ResponseEntity<FiguricaDTO> prikaziFiguricu(
+            @PathVariable Long idFigurice
+    ) {
         Optional<FiguricaDTO> figuricaDTO = figuricaService.pronadjiFiguricu(idFigurice);
 
         return figuricaDTO
                 .map(ResponseEntity::ok)
-                .orElseGet(()-> ResponseEntity.status(404).body(null));
-
+                .orElseGet(() -> ResponseEntity.status(404).body(null));
     }
+
 
 
 
     @GetMapping("/sveFigurice/{idKorisnika}")
     public ResponseEntity<List<FiguricaDTO>> vratiFiguriceZaKorisnika(
             @PathVariable Long idKorisnika
-            )
+    ) {
+        List<FiguricaDTO> figurice = figuricaService.vratiFiguriceZaKorisnika(idKorisnika);
 
+        if (figurice.isEmpty()) {
+            return ResponseEntity.status(404).body(null);
+        } else {
+            return ResponseEntity.ok(figurice);
+        }
+    }
+
+
+    @PutMapping("/azurirajFiguricu/{idFigurice}")
+    public ResponseEntity<FiguricaDTO> azurirajFiguricu(
+            @PathVariable Long idFigurice,
+            @RequestBody  FiguricaDTO figuricaDTO
+    )
     {
 
-        try
-        {
+        try {
+                return  ResponseEntity.status(200).body(figuricaService.azurirajFiguricu(idFigurice,figuricaDTO));
 
-            return ResponseEntity.status(200).body( figuricaService.vratiFiguriceZaKorisnika(idKorisnika));
         }
         catch (Exception e)
         {
@@ -72,10 +82,9 @@ public class FiguricaKontroler {
         }
 
 
-
-
-
     }
+
+
 
 
 
