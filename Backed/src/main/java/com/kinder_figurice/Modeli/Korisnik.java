@@ -1,67 +1,47 @@
-package com.kinder_figurice.Modeli;
+package com.kinder_figurice.modeli;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "korisnici")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@Table(name = "korisnici")
 public class Korisnik {
 
-   @Id
-   @GeneratedValue(strategy = GenerationType.AUTO)
-   private Long idKorisnika;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
+    @Column(unique = true, nullable = false)
+    private String korisnickoIme;
 
-   @Column(nullable = false)
-   private String ime;
+    @Column(unique = true, nullable = false)
+    private String email;
 
-   @Column(nullable = false)
-   private String prezime;
-
-
-   @Column(nullable = false , unique = true)
-   private String email;
-
-
-    @Column(nullable = false)
     private String lozinka;
 
-    @Column
-    private String slikaKorisnika;
+    private String uloga;
 
-    @Column
-    private Boolean aktivanKorisnik = true;
+    private Boolean isVerified = true;
 
-    ////One koje je srcnuo
-    @OneToMany
-    @JoinTable(name = "wishlist",
-    joinColumns = @JoinColumn(name = "idKorisnika"),
-            inverseJoinColumns = @JoinColumn(name = "idFigurice"))
-    private List<Figurica> wishList;
+    private String provider;
 
+    private String providerId;
 
-    /// Vlasnistvo nad figuricama
-    @OneToMany(mappedBy = "korisnik" , cascade = CascadeType.ALL, orphanRemoval = true)
+    private LocalDateTime datumKreiranja;
+
+    private LocalDateTime datumAzuriranja;
+
+    @OneToMany(mappedBy = "korisnik", cascade = CascadeType.ALL)
     private List<Figurica> figurice;
-
-
-
-
-
-
-
-
-
-
 
 }
