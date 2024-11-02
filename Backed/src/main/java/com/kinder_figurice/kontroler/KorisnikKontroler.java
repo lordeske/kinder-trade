@@ -2,10 +2,12 @@ package com.kinder_figurice.kontroler;
 
 
 import com.kinder_figurice.dto.KorisnikDTO.AzurirajKorisnikaDTO;
+import com.kinder_figurice.dto.KorisnikDTO.PrikazKorisnikaDrugima;
 import com.kinder_figurice.dto.KorisnikDTO.RegistracijaDTO;
 import com.kinder_figurice.exceptions.EmailConflictException;
 import com.kinder_figurice.modeli.Korisnik;
 import com.kinder_figurice.servisi.KorisnikServis;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -77,4 +79,20 @@ public class KorisnikKontroler {
     }
 
 
+    @GetMapping("/{imeKorisnika}")
+    public ResponseEntity<PrikazKorisnikaDrugima> prikaziProfilKorisnika(
+            @PathVariable String imeKorisnika
+    )
+    {
+        try {
+
+            PrikazKorisnikaDrugima korisnik = korisnikServis.nadjiKorisnikaPoImenu(imeKorisnika);
+            return new ResponseEntity<>(korisnik , HttpStatus.OK);
+
+        }
+        catch (EntityNotFoundException e)
+        {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }

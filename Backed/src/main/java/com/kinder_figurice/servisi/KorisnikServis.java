@@ -2,10 +2,12 @@ package com.kinder_figurice.servisi;
 
 
 import com.kinder_figurice.dto.KorisnikDTO.AzurirajKorisnikaDTO;
+import com.kinder_figurice.dto.KorisnikDTO.PrikazKorisnikaDrugima;
 import com.kinder_figurice.dto.KorisnikDTO.RegistracijaDTO;
 import com.kinder_figurice.exceptions.EmailConflictException;
 import com.kinder_figurice.modeli.Korisnik;
 import com.kinder_figurice.repo.KorisnikRepo;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -79,5 +81,27 @@ public class KorisnikServis {
             throw new RuntimeException("Korisnik sa ID: " + id + " nije pronađen.");
         }
     }
+
+
+    public PrikazKorisnikaDrugima nadjiKorisnikaPoImenu(String imeKorisnika) {
+        Korisnik korisnik = korisnikRepo.findByKorisnickoIme(imeKorisnika);
+        Optional<Korisnik> optionalKorisnik = Optional.ofNullable(korisnik);
+
+        if (optionalKorisnik.isPresent()) {
+            Korisnik dobijeniKorisnik = optionalKorisnik.get();
+            PrikazKorisnikaDrugima prikazKorisnika = new PrikazKorisnikaDrugima();
+            prikazKorisnika.setSlika(dobijeniKorisnik.getSlika());
+            prikazKorisnika.setDatumKreiranja(dobijeniKorisnik.getDatumKreiranja());
+            prikazKorisnika.setKorisnickoIme(dobijeniKorisnik.getKorisnickoIme());
+
+            return prikazKorisnika;
+        } else {
+            throw new EntityNotFoundException("Korisnik nije pronađen");
+        }
+    }
+
+
+
+
 
 }

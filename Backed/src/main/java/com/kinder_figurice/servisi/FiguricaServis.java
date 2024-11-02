@@ -1,11 +1,17 @@
 package com.kinder_figurice.servisi;
 
 
+import com.kinder_figurice.dto.FiguricaDTO.FiguricaDTO;
+import com.kinder_figurice.dto.FiguricaDTO.FiguricaUpdateDTO;
 import com.kinder_figurice.modeli.Figurica;
+import com.kinder_figurice.modeli.Korisnik;
 import com.kinder_figurice.repo.FiguricaRepo;
+import com.kinder_figurice.repo.KorisnikRepo;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +21,9 @@ public class FiguricaServis {
 
     @Autowired
     private FiguricaRepo figuricaRepo;
+
+    @Autowired
+    private KorisnikRepo korisnikRepo;
 
 
 
@@ -28,13 +37,70 @@ public class FiguricaServis {
     }
 
 
-    public Figurica save(Figurica figurica) {
-        return figuricaRepo.save(figurica);
+    public FiguricaDTO kreirajFiguricu(FiguricaDTO figurica, Long idKorisnika) {
+        Optional<Korisnik> korisnikOptional = korisnikRepo.findById(idKorisnika);
+        if (korisnikOptional.isEmpty()) {
+            throw new EntityNotFoundException("Korisnik sa ID " + idKorisnika + " nije pronađen");
+        }
+
+        Figurica figuricaZaKreiranje = new Figurica();
+        figuricaZaKreiranje.setNaslov(figurica.getNaslov());
+        figuricaZaKreiranje.setCena(figurica.getCena());
+        figuricaZaKreiranje.setKategorija(figurica.getKategorija());
+        figuricaZaKreiranje.setStanje(figurica.getStanje());
+        figuricaZaKreiranje.setSlikaUrl(figurica.getSlikaUrl());
+        figuricaZaKreiranje.setDatumKreiranja(LocalDateTime.now());
+        figuricaZaKreiranje.setKorisnik(korisnikOptional.get());
+
+        Figurica sacuvanaFigurica = figuricaRepo.save(figuricaZaKreiranje);
+
+
+        FiguricaDTO kreiranaFiguricaDTO = new FiguricaDTO();
+        kreiranaFiguricaDTO.setNaslov(sacuvanaFigurica.getNaslov());
+        kreiranaFiguricaDTO.setCena(sacuvanaFigurica.getCena());
+        kreiranaFiguricaDTO.setKategorija(sacuvanaFigurica.getKategorija());
+        kreiranaFiguricaDTO.setStanje(sacuvanaFigurica.getStanje());
+        kreiranaFiguricaDTO.setSlikaUrl(sacuvanaFigurica.getSlikaUrl());
+        kreiranaFiguricaDTO.setDatumKreiranja(LocalDateTime.now());
+
+        return kreiranaFiguricaDTO;
     }
 
 
-    public Figurica update(Figurica figurica) {
-        return figuricaRepo.save(figurica);
+
+    public FiguricaDTO azurirajFiguricu(FiguricaUpdateDTO figuricaInsert, Long idFigurice) {
+
+        Optional<Figurica> dobijenaFigurica = figuricaRepo.findById(idFigurice);
+        if(dobijenaFigurica.isPresent())
+        {
+            Figurica figurica1 = dobijenaFigurica.get();
+            figurica1.setCena(figuricaInsert.getCena());
+            figurica1.setKategorija(figuricaInsert.getKategorija());
+            figurica1.setStanje(figuricaInsert.getStanje());
+            figurica1.setNaslov(figuricaInsert.getNaslov());
+            figurica1.setSlikaUrl(figuricaInsert.getSlikaUrl());
+            figurica1.setOpis(figuricaInsert.getOpis());
+
+            figuricaRepo.save(figurica1);
+
+            FiguricaDTO figuricaDTO = new FiguricaDTO();
+            figuricaDTO.setCena(figuricaInsert.getCena());
+            figuricaDTO.setKategorija(figuricaInsert.getKategorija());
+            figuricaDTO.setStanje(figuricaInsert.getStanje());
+            figuricaDTO.setNaslov(figuricaInsert.getNaslov());
+            figuricaDTO.setSlikaUrl(figuricaInsert.getSlikaUrl());
+            figuricaDTO.setOpis(figuricaInsert.getOpis());
+            figuricaDTO.setDatumKreiranja(figurica1.getDatumKreiranja());
+
+            return figuricaDTO;
+
+
+        }
+        else {
+            throw new RuntimeException("Figurica sa ID: " + idFigurice + " nije pronadjena.");
+        }
+
+
     }
 
 

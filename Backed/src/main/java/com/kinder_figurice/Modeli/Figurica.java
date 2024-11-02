@@ -36,7 +36,7 @@ public class Figurica {
 
     private LocalDateTime datumKreiranja;
 
-    private LocalDateTime datumAzuriranja;
+
 
     @ManyToOne
     @JoinColumn(name = "korisnik_id", nullable = false)

@@ -1,9 +1,13 @@
 package com.kinder_figurice.kontroler;
 
 
+import com.kinder_figurice.dto.FiguricaDTO.FiguricaDTO;
+import com.kinder_figurice.dto.FiguricaDTO.FiguricaUpdateDTO;
 import com.kinder_figurice.modeli.Figurica;
 import com.kinder_figurice.servisi.FiguricaServis;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,32 +45,38 @@ public class FiguircaKontroler {
     }
 
 
-    @PostMapping
-    public ResponseEntity<Figurica> createFigurica(@RequestBody Figurica figurica) {
-        Figurica novaFigurica = figuricaServis.save(figurica);
-        return ResponseEntity.ok(novaFigurica);
+    @PostMapping("/{idKorisnika}")
+    public ResponseEntity<FiguricaDTO> KreirajFiguricu (@RequestBody FiguricaDTO figurica, @PathVariable Long idKorisnika) {
+
+        try {
+            FiguricaDTO figurica1 = figuricaServis.kreirajFiguricu(figurica,idKorisnika);
+            return new ResponseEntity<>(figurica1, HttpStatus.CREATED);
+
+        }
+        catch (EntityNotFoundException e)
+        {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
     }
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Figurica> updateFigurica(@PathVariable Long id, @RequestBody Figurica figuricaDetalji) {
-        Optional<Figurica> postojecaFigurica = figuricaServis.findById(id);
+    public ResponseEntity<FiguricaDTO> updateFigurica(@PathVariable Long id, @RequestBody FiguricaUpdateDTO azuriranaFigurica) {
 
-        if (postojecaFigurica.isPresent()) {
-            Figurica figurica = postojecaFigurica.get();
-            figurica.setNaslov(figuricaDetalji.getNaslov());
-            figurica.setOpis(figuricaDetalji.getOpis());
-            figurica.setCena(figuricaDetalji.getCena());
-            figurica.setStanje(figuricaDetalji.getStanje());
-            figurica.setSlikaUrl(figuricaDetalji.getSlikaUrl());
-            figurica.setKategorija(figuricaDetalji.getKategorija());
+        try {
 
-            Figurica azuriranaFigurica = figuricaServis.save(figurica);
-            return ResponseEntity.ok(azuriranaFigurica);
-        } else {
-            return ResponseEntity.notFound().build();
+            FiguricaDTO figuricaDTO = figuricaServis.azurirajFiguricu(azuriranaFigurica, id);
+            return  new ResponseEntity<>(figuricaDTO, HttpStatus.OK);
+
+        }
+        catch (RuntimeException e)
+        {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFigurica(@PathVariable Long id) {
