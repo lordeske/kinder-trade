@@ -1,11 +1,16 @@
 package com.kinder_figurice.servisi;
 
 
+import com.kinder_figurice.dto.KorisnikDTO.AzurirajKorisnikaDTO;
+import com.kinder_figurice.dto.KorisnikDTO.RegistracijaDTO;
+import com.kinder_figurice.exceptions.EmailConflictException;
 import com.kinder_figurice.modeli.Korisnik;
 import com.kinder_figurice.repo.KorisnikRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +20,10 @@ public class KorisnikServis {
 
     @Autowired
     private KorisnikRepo korisnikRepo;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     public List<Korisnik> sviKorisnici()
     {
@@ -28,9 +37,20 @@ public class KorisnikServis {
     }
 
 
-    public Korisnik sacuvajKorisnika(Korisnik korisnik) {
-        return korisnikRepo.save(korisnik);
+    public Korisnik kreirajKorisnika(RegistracijaDTO korisnikDTO) {
+        if (korisnikRepo.existsByEmail(korisnikDTO.getEmail())) {
+            throw new EmailConflictException("Email već postoji.");
+        }
+
+        Korisnik noviKorisnik = new Korisnik();
+        noviKorisnik.setEmail(korisnikDTO.getEmail());
+        noviKorisnik.setKorisnickoIme(korisnikDTO.getKorisnickoIme());
+        noviKorisnik.setLozinka(passwordEncoder.encode(korisnikDTO.getLozinka()));
+        noviKorisnik.setDatumKreiranja(LocalDateTime.now());
+
+        return korisnikRepo.save(noviKorisnik);
     }
+
 
 
     public void obrisiKorisnika(Long id) {
@@ -38,6 +58,26 @@ public class KorisnikServis {
     }
 
 
+    public Korisnik azurirajKorisnika(Long id, AzurirajKorisnikaDTO azuriraniKorisnik) {
+        Optional<Korisnik> postojeciKorisnik = korisnikRepo.findById(id);
+        if (postojeciKorisnik.isPresent()) {
+            Korisnik korisnikZaCuvanje = postojeciKorisnik.get();
 
+
+            korisnikZaCuvanje.setKorisnickoIme(azuriraniKorisnik.getKorisnickoIme());
+
+
+            if (azuriraniKorisnik.getLozinka() != null && !azuriraniKorisnik.getLozinka().isEmpty()) {
+                korisnikZaCuvanje.setLozinka(passwordEncoder.encode(azuriraniKorisnik.getLozinka()));
+            }
+
+            korisnikZaCuvanje.setSlika(azuriraniKorisnik.getSlika());
+            korisnikZaCuvanje.setDatumAzuriranja(LocalDateTime.now());
+
+            return korisnikRepo.save(korisnikZaCuvanje);
+        } else {
+            throw new RuntimeException("Korisnik sa ID: " + id + " nije pronađen.");
+        }
+    }
 
 }

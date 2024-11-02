@@ -1,6 +1,9 @@
 package com.kinder_figurice.kontroler;
 
 
+import com.kinder_figurice.dto.KorisnikDTO.AzurirajKorisnikaDTO;
+import com.kinder_figurice.dto.KorisnikDTO.RegistracijaDTO;
+import com.kinder_figurice.exceptions.EmailConflictException;
 import com.kinder_figurice.modeli.Korisnik;
 import com.kinder_figurice.servisi.KorisnikServis;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +24,10 @@ public class KorisnikKontroler {
     private KorisnikServis korisnikServis;
 
 
-
-
     @GetMapping
     public ResponseEntity<List<Korisnik>> sviKorisnici() {
         List<Korisnik> korisnici = korisnikServis.sviKorisnici();
-        return new ResponseEntity<>(korisnici, HttpStatus.OK); // Vraća 200 OK
+        return new ResponseEntity<>(korisnici, HttpStatus.OK);
     }
 
 
@@ -34,18 +35,34 @@ public class KorisnikKontroler {
     public ResponseEntity<Korisnik> nadjiKorisnika(@PathVariable Long id) {
         Optional<Korisnik> korisnik = korisnikServis.nadjiKorisnikaPoID(id);
         if (korisnik.isPresent()) {
-            return new ResponseEntity<>(korisnik.get(), HttpStatus.OK); // Vraća 200 OK
+            return new ResponseEntity<>(korisnik.get(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Vraća 404 NOT FOUND
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Korisnik> azurirajKorisnika(@PathVariable Long id, @RequestBody AzurirajKorisnikaDTO azuriraniKorisnik) {
+        try {
+            Korisnik izmenjenKorisnik = korisnikServis.azurirajKorisnika(id, azuriraniKorisnik);
+            return new ResponseEntity<>(izmenjenKorisnik, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
 
+
     @PostMapping
-    public ResponseEntity<Korisnik> dodajKorisnika(@RequestBody Korisnik korisnik) {
-        Korisnik noviKorisnik = korisnikServis.sacuvajKorisnika(korisnik);
-        return new ResponseEntity<>(noviKorisnik, HttpStatus.CREATED); // Vraća 201 CREATED
+    public ResponseEntity<Korisnik> kreirajKorisnika(@RequestBody RegistracijaDTO korisnik) {
+        try {
+            Korisnik noviKorisnik = korisnikServis.kreirajKorisnika(korisnik);
+            return new ResponseEntity<>(noviKorisnik, HttpStatus.CREATED);
+        } catch (EmailConflictException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
+
 
 
     @DeleteMapping("/{id}")
@@ -53,9 +70,9 @@ public class KorisnikKontroler {
         Optional<Korisnik> korisnik = korisnikServis.nadjiKorisnikaPoID(id);
         if (korisnik.isPresent()) {
             korisnikServis.obrisiKorisnika(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // Vraća 204 NO CONTENT
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Vraća 404 NOT FOUND
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 

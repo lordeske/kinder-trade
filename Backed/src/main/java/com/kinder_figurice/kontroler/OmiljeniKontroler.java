@@ -18,7 +18,6 @@ import java.util.Optional;
 @RequestMapping("/api/omiljeni")
 public class OmiljeniKontroler {
 
-
     @Autowired
     private OmiljeniServis omiljeniServis;
 
@@ -28,55 +27,42 @@ public class OmiljeniKontroler {
     @Autowired
     private FiguricaServis figuricaServis;
 
-
-
-    @GetMapping
+    @GetMapping("/{id}")
     public ResponseEntity<List<Omiljeni>> getOmiljeniByKorisnik(
             @PathVariable Long id
-    )
-    {
+    ) {
         Optional<Korisnik> korisnik = korisnikServis.nadjiKorisnikaPoID(id);
 
-        if(!korisnik.isPresent())
-        {
+        if (!korisnik.isPresent()) {
             return ResponseEntity.notFound().build();
         }
 
         List<Omiljeni> omiljeni = omiljeniServis.getOmiljeniByKorisnik(korisnik.get());
         return ResponseEntity.ok(omiljeni);
-
     }
 
-    @PostMapping("{korisnikId}/{figuricaId}")
+    @PostMapping("/{korisnikId}/{figuricaId}")
     public ResponseEntity<Omiljeni> dodajFiguricuUOmiljeno(
-            @PathVariable Long idKorisnika,
-            @PathVariable Long idFigurice
-    )
-    {
-        Optional<Korisnik> korisnik = korisnikServis.nadjiKorisnikaPoID(idKorisnika);
-        Optional<Figurica> figurica = figuricaServis.findById(idFigurice);
+            @PathVariable Long korisnikId,
+            @PathVariable Long figuricaId
+    ) {
+        Optional<Korisnik> korisnik = korisnikServis.nadjiKorisnikaPoID(korisnikId);
+        Optional<Figurica> figurica = figuricaServis.findById(figuricaId);
 
-        if(!korisnik.isPresent() && !figurica.isPresent())
-        {
+        if (!korisnik.isPresent() || !figurica.isPresent()) {
             return ResponseEntity.notFound().build();
+        } else {
+            Omiljeni omiljeni = omiljeniServis.dodajFiguricuUOmiljeni(korisnik.get(), figurica.get());
+            return ResponseEntity.ok(omiljeni);
         }
-
-        Omiljeni omiljeni = omiljeniServis.dodajFiguricuUOmiljeni(korisnik.get(), figurica.get());
-
-        return ResponseEntity.ok(omiljeni);
-
     }
 
-
-
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> obrisiFiguricuIzOmiljeno(
             @PathVariable Long id
-    )
-    {
-
+    ) {
         omiljeniServis.obrisiOmiljenu(id);
-        return  ResponseEntity.noContent().build();
+        return ResponseEntity.noContent().build();
     }
 
 

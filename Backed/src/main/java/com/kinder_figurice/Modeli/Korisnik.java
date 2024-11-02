@@ -1,5 +1,6 @@
 package com.kinder_figurice.modeli;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,6 +30,8 @@ public class Korisnik {
 
     private String lozinka;
 
+    private String slika;
+
     private String uloga;
 
     private Boolean isVerified = true;
@@ -42,6 +45,7 @@ public class Korisnik {
     private LocalDateTime datumAzuriranja;
 
     @OneToMany(mappedBy = "korisnik", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Figurica> figurice;
 
 }
