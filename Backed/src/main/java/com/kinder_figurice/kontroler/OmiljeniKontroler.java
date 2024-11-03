@@ -1,6 +1,7 @@
 package com.kinder_figurice.kontroler;
 
 
+import com.kinder_figurice.dto.FiguricaDTO.FiguricaDTO;
 import com.kinder_figurice.modeli.Figurica;
 import com.kinder_figurice.modeli.Korisnik;
 import com.kinder_figurice.modeli.Omiljeni;
@@ -8,6 +9,7 @@ import com.kinder_figurice.servisi.FiguricaServis;
 import com.kinder_figurice.servisi.KorisnikServis;
 import com.kinder_figurice.servisi.OmiljeniServis;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,18 +29,15 @@ public class OmiljeniKontroler {
     @Autowired
     private FiguricaServis figuricaServis;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<List<Omiljeni>> getOmiljeniByKorisnik(
-            @PathVariable Long id
-    ) {
-        Optional<Korisnik> korisnik = korisnikServis.nadjiKorisnikaPoID(id);
+    @GetMapping("/{korisnikId}")
+    public ResponseEntity<List<FiguricaDTO>> listFavoriteFigurice(@PathVariable Long korisnikId) {
+        List<FiguricaDTO> favoriteFigurice = omiljeniServis.getOmiljeniByKorisnikId(korisnikId);
 
-        if (!korisnik.isPresent()) {
-            return ResponseEntity.notFound().build();
+        if (favoriteFigurice.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        List<Omiljeni> omiljeni = omiljeniServis.getOmiljeniByKorisnik(korisnik.get());
-        return ResponseEntity.ok(omiljeni);
+        return ResponseEntity.ok(favoriteFigurice);
     }
 
     @PostMapping("/{korisnikId}/{figuricaId}")
@@ -46,14 +45,16 @@ public class OmiljeniKontroler {
             @PathVariable Long korisnikId,
             @PathVariable Long figuricaId
     ) {
-        Optional<Korisnik> korisnik = korisnikServis.nadjiKorisnikaPoID(korisnikId);
-        Optional<Figurica> figurica = figuricaServis.findById(figuricaId);
 
-        if (!korisnik.isPresent() || !figurica.isPresent()) {
-            return ResponseEntity.notFound().build();
-        } else {
-            Omiljeni omiljeni = omiljeniServis.dodajFiguricuUOmiljeni(korisnik.get(), figurica.get());
-            return ResponseEntity.ok(omiljeni);
+        try {
+            Omiljeni omiljeni = omiljeniServis.dodajFiguricuUOmiljeni(korisnikId, figuricaId);
+            return new ResponseEntity<>(omiljeni, HttpStatus.CREATED);
+        } catch (IllegalStateException e) {
+            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -61,8 +62,16 @@ public class OmiljeniKontroler {
     public ResponseEntity<Void> obrisiFiguricuIzOmiljeno(
             @PathVariable Long id
     ) {
-        omiljeniServis.obrisiOmiljenu(id);
-        return ResponseEntity.noContent().build();
+        Boolean jelObrisana = omiljeniServis.obrisiOmiljenu(id);
+
+        if(jelObrisana)
+        {
+            return ResponseEntity.noContent().build();
+        }
+        else
+        {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
 

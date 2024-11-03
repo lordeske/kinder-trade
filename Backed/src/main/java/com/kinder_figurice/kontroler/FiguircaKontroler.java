@@ -46,7 +46,7 @@ public class FiguircaKontroler {
 
 
     @PostMapping("/{idKorisnika}")
-    public ResponseEntity<FiguricaDTO> KreirajFiguricu (@RequestBody FiguricaDTO figurica, @PathVariable Long idKorisnika) {
+    public ResponseEntity<FiguricaDTO> kreirajFiguricu (@RequestBody FiguricaDTO figurica, @PathVariable Long idKorisnika) {
 
         try {
             FiguricaDTO figurica1 = figuricaServis.kreirajFiguricu(figurica,idKorisnika);
@@ -83,6 +83,54 @@ public class FiguircaKontroler {
         figuricaServis.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+
+    @GetMapping("/{nazivFigurica}")
+    public ResponseEntity<List<FiguricaDTO>> nadjiPoNazivu(
+            @PathVariable String nazivFigurica
+    )
+    {
+        try {
+
+            List<FiguricaDTO>  figurice =  figuricaServis.nadjiPoNazivu(nazivFigurica);
+            return new ResponseEntity<>(figurice, HttpStatus.OK);
+
+        }
+        catch (EntityNotFoundException e)
+        {
+            return ResponseEntity.notFound().build();
+        }
+
+
+
+    }
+
+
+    @GetMapping("/{idKorisnika}")
+    public ResponseEntity<List<FiguricaDTO>> korisnickeFigurice(
+            @PathVariable Long idKorisnika
+    )
+    {
+        try {
+
+            List<FiguricaDTO>  figurice =  figuricaServis.sveFiguriceKorisnika(idKorisnika);
+            return new ResponseEntity<>(figurice, HttpStatus.OK);
+
+        }
+        catch (Exception e)
+        {
+            return ResponseEntity.notFound().build();
+        }
+
+
+
+    }
+
+
+
+
+
+
 
 
 

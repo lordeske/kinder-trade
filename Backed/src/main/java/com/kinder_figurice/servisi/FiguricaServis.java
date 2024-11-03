@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +35,17 @@ public class FiguricaServis {
 
     public Optional<Figurica> findById(Long id) {
         return figuricaRepo.findById(id);
+    }
+
+
+    public List<FiguricaDTO> nadjiPoNazivu(String naslovFigurice) {
+        List<Figurica> figurice = figuricaRepo.findByNaslov(naslovFigurice);
+
+        if (figurice != null && !figurice.isEmpty()) {
+            return mapirajObjekatFiguriceUDTO(figurice);
+        } else {
+            throw new EntityNotFoundException("Figurice sa nazivom: " + naslovFigurice + " nisu pronadjene.");
+        }
     }
 
 
@@ -108,5 +120,43 @@ public class FiguricaServis {
         figuricaRepo.deleteById(id);
     }
 
+
+    public List<FiguricaDTO> sveFiguriceKorisnika(Long idKorisnika)
+    {
+
+        List<Figurica> nizFigurica = figuricaRepo.findByKorisnikID(idKorisnika);
+
+        if (nizFigurica != null) {
+            return  mapirajObjekatFiguriceUDTO(nizFigurica);
+        } else {
+            throw new EntityNotFoundException("Desila se greska sa pretragom za korisnika" + idKorisnika);
+        }
+
+
+
+
+    }
+
+
+    /// Funckije basic
+
+    public List<FiguricaDTO> mapirajObjekatFiguriceUDTO(List<Figurica> dataLista) {
+        List<FiguricaDTO> potrebnaLista = new ArrayList<>();
+
+        for (Figurica figurica : dataLista) {
+            FiguricaDTO figuricaDTO = new FiguricaDTO();
+            figuricaDTO.setNaslov(figurica.getNaslov());
+            figuricaDTO.setDatumKreiranja(figurica.getDatumKreiranja());
+            figuricaDTO.setOpis(figurica.getOpis());
+            figuricaDTO.setCena(figurica.getCena());
+            figuricaDTO.setKategorija(figurica.getKategorija());
+            figuricaDTO.setSlikaUrl(figurica.getSlikaUrl());
+            figuricaDTO.setStanje(figurica.getStanje());
+
+            potrebnaLista.add(figuricaDTO);
+        }
+
+        return potrebnaLista;
+    }
 
 }
