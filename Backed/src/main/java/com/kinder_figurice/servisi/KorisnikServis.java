@@ -2,7 +2,7 @@ package com.kinder_figurice.servisi;
 
 
 import com.kinder_figurice.dto.KorisnikDTO.AzurirajKorisnikaDTO;
-import com.kinder_figurice.dto.KorisnikDTO.PrikazKorisnikaDrugima;
+import com.kinder_figurice.dto.KorisnikDTO.PrikazKorisnikaDrugimaDTO;
 import com.kinder_figurice.dto.KorisnikDTO.RegistracijaDTO;
 import com.kinder_figurice.exceptions.EmailConflictException;
 import com.kinder_figurice.modeli.Korisnik;
@@ -83,13 +83,13 @@ public class KorisnikServis {
     }
 
 
-    public PrikazKorisnikaDrugima nadjiKorisnikaPoImenu(String imeKorisnika) {
+    public PrikazKorisnikaDrugimaDTO nadjiKorisnikaPoImenu(String imeKorisnika) {
         Korisnik korisnik = korisnikRepo.findByKorisnickoIme(imeKorisnika);
         Optional<Korisnik> optionalKorisnik = Optional.ofNullable(korisnik);
 
         if (optionalKorisnik.isPresent()) {
             Korisnik dobijeniKorisnik = optionalKorisnik.get();
-            PrikazKorisnikaDrugima prikazKorisnika = new PrikazKorisnikaDrugima();
+            PrikazKorisnikaDrugimaDTO prikazKorisnika = new PrikazKorisnikaDrugimaDTO();
             prikazKorisnika.setSlika(dobijeniKorisnik.getSlika());
             prikazKorisnika.setDatumKreiranja(dobijeniKorisnik.getDatumKreiranja());
             prikazKorisnika.setKorisnickoIme(dobijeniKorisnik.getKorisnickoIme());

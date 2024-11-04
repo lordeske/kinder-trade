@@ -2,25 +2,33 @@ package com.kinder_figurice.modeli;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 import java.time.LocalDateTime;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 @Table(name = "recenzije")
 public class Recenzije {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "recenzent_id", nullable = false)
     private Korisnik recenzent;
 
     @ManyToOne
-    @JoinColumn(name = "figurica_id", nullable = false)
-    private Figurica figurica;
+    @JoinColumn(name = "recenzirani_id", nullable = false)
+    private Korisnik recenziraniKorisnik;
 
     private int ocena;
 

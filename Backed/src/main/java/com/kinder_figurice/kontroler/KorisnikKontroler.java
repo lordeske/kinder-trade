@@ -2,7 +2,7 @@ package com.kinder_figurice.kontroler;
 
 
 import com.kinder_figurice.dto.KorisnikDTO.AzurirajKorisnikaDTO;
-import com.kinder_figurice.dto.KorisnikDTO.PrikazKorisnikaDrugima;
+import com.kinder_figurice.dto.KorisnikDTO.PrikazKorisnikaDrugimaDTO;
 import com.kinder_figurice.dto.KorisnikDTO.RegistracijaDTO;
 import com.kinder_figurice.exceptions.EmailConflictException;
 import com.kinder_figurice.modeli.Korisnik;
@@ -80,13 +80,13 @@ public class KorisnikKontroler {
 
 
     @GetMapping("/{imeKorisnika}")
-    public ResponseEntity<PrikazKorisnikaDrugima> prikaziProfilKorisnika(
+    public ResponseEntity<PrikazKorisnikaDrugimaDTO> prikaziProfilKorisnika(
             @PathVariable String imeKorisnika
     )
     {
         try {
 
-            PrikazKorisnikaDrugima korisnik = korisnikServis.nadjiKorisnikaPoImenu(imeKorisnika);
+            PrikazKorisnikaDrugimaDTO korisnik = korisnikServis.nadjiKorisnikaPoImenu(imeKorisnika);
             return new ResponseEntity<>(korisnik , HttpStatus.OK);
 
         }
