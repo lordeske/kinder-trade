@@ -62,6 +62,7 @@ public class FiguricaServis {
         figuricaZaKreiranje.setStanje(figurica.getStanje());
         figuricaZaKreiranje.setSlikaUrl(figurica.getSlikaUrl());
         figuricaZaKreiranje.setDatumKreiranja(LocalDateTime.now());
+        figuricaZaKreiranje.setOpis(figurica.getOpis());
         figuricaZaKreiranje.setKorisnik(korisnikOptional.get());
 
         Figurica sacuvanaFigurica = figuricaRepo.save(figuricaZaKreiranje);
@@ -124,7 +125,7 @@ public class FiguricaServis {
     public List<FiguricaDTO> sveFiguriceKorisnika(Long idKorisnika)
     {
 
-        List<Figurica> nizFigurica = figuricaRepo.findByKorisnikID(idKorisnika);
+        List<Figurica> nizFigurica = figuricaRepo.findByKorisnikId(idKorisnika);
 
         if (nizFigurica != null) {
             return  mapirajObjekatFiguriceUDTO(nizFigurica);
