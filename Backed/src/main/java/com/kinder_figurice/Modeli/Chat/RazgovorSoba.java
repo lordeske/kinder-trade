@@ -14,7 +14,12 @@ import lombok.*;
 public class RazgovorSoba {
 
     @Id
+
     private String idRazgovorSoba;
+
+    @OneToOne
+    @JoinColumn(name = "idRazgovora", nullable = false)
+    private Razgovor razgovor;
 
     @ManyToOne
     @JoinColumn(name = "primalac_id", nullable = false)
@@ -23,5 +28,4 @@ public class RazgovorSoba {
     @ManyToOne
     @JoinColumn(name = "posiljalac_id", nullable = false)
     private Korisnik posiljalac;
-
 }

@@ -2,13 +2,21 @@ package com.kinder_figurice.servisi;
 
 
 import com.kinder_figurice.dto.KorisnikDTO.AzurirajKorisnikaDTO;
+import com.kinder_figurice.dto.KorisnikDTO.LoginDTO;
 import com.kinder_figurice.dto.KorisnikDTO.PrikazKorisnikaDrugimaDTO;
 import com.kinder_figurice.dto.KorisnikDTO.RegistracijaDTO;
 import com.kinder_figurice.exceptions.EmailConflictException;
+import com.kinder_figurice.exceptions.UserNameExistException;
 import com.kinder_figurice.modeli.Korisnik;
+import com.kinder_figurice.modeli.Role;
 import com.kinder_figurice.repo.KorisnikRepo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +33,9 @@ public class KorisnikServis {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
 
     public List<Korisnik> sviKorisnici()
@@ -48,7 +59,8 @@ public class KorisnikServis {
         noviKorisnik.setEmail(korisnikDTO.getEmail());
         noviKorisnik.setKorisnickoIme(korisnikDTO.getKorisnickoIme());
         noviKorisnik.setLozinka(passwordEncoder.encode(korisnikDTO.getLozinka()));
-        noviKorisnik.setDatumKreiranja(LocalDateTime.now());
+        noviKorisnik.setUloga(Role.USER);
+
 
         return korisnikRepo.save(noviKorisnik);
     }
@@ -74,7 +86,7 @@ public class KorisnikServis {
             }
 
             korisnikZaCuvanje.setSlika(azuriraniKorisnik.getSlika());
-            korisnikZaCuvanje.setDatumAzuriranja(LocalDateTime.now());
+
 
             return korisnikRepo.save(korisnikZaCuvanje);
         } else {
@@ -83,15 +95,71 @@ public class KorisnikServis {
     }
 
 
+    public void loginKorisnika(LoginDTO loginDTO) {
+
+        if (loginDTO.getKorisnickoIme() == null || loginDTO.getKorisnickoIme().isEmpty()) {
+            throw new IllegalArgumentException("Korisničko ime ne sme biti null ili prazno!");
+        }
+
+
+        if (!korisnikRepo.existsByKorisnickoIme(loginDTO.getKorisnickoIme())) {
+            throw new EntityNotFoundException("Ne postoji takav korisnik");
+        }
+
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginDTO.getKorisnickoIme(),
+                        loginDTO.getLozinka()
+                )
+        );
+
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+
+    public  void registrujKorisnika(RegistracijaDTO registracijaDTO)
+    {
+
+        if(!korisnikRepo.existsByKorisnickoIme(registracijaDTO.getKorisnickoIme()))
+        {
+
+
+            Korisnik noviKorisnik = new Korisnik();
+            noviKorisnik.setEmail(registracijaDTO.getEmail());
+            noviKorisnik.setKorisnickoIme(registracijaDTO.getKorisnickoIme());
+            noviKorisnik.setLozinka(passwordEncoder.encode(registracijaDTO.getLozinka()));
+            noviKorisnik.setUloga(Role.USER);
+
+
+            korisnikRepo.save(noviKorisnik);
+
+
+
+
+
+        }
+        else
+        {
+            throw new UserNameExistException("Korisnik sa imenom " + registracijaDTO.getKorisnickoIme() + "vec postoji");
+        }
+
+
+
+    }
+
+
     public PrikazKorisnikaDrugimaDTO nadjiKorisnikaPoImenu(String imeKorisnika) {
-        Korisnik korisnik = korisnikRepo.findByKorisnickoIme(imeKorisnika);
+        Korisnik korisnik = korisnikRepo.findByKorisnickoIme(imeKorisnika).orElseThrow(()->
+                new UsernameNotFoundException("Korisnik nije pronadjen"));
         Optional<Korisnik> optionalKorisnik = Optional.ofNullable(korisnik);
 
         if (optionalKorisnik.isPresent()) {
             Korisnik dobijeniKorisnik = optionalKorisnik.get();
             PrikazKorisnikaDrugimaDTO prikazKorisnika = new PrikazKorisnikaDrugimaDTO();
             prikazKorisnika.setSlika(dobijeniKorisnik.getSlika());
-            prikazKorisnika.setDatumKreiranja(dobijeniKorisnik.getDatumKreiranja());
+
             prikazKorisnika.setKorisnickoIme(dobijeniKorisnik.getKorisnickoIme());
 
             return prikazKorisnika;

@@ -19,11 +19,15 @@ import java.util.List;
 public class WebSoketKonfiguracija  implements WebSocketMessageBrokerConfigurer {
 
 
+
+    /// Kreiranje endpointa
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
        registry.addEndpoint("/chatEndpoint").withSockJS();
     }
 
+
+    /// Konfa za prenos poruka u JSON formatu
     @Override
     public boolean configureMessageConverters(List<MessageConverter> messageConverters) {
 
@@ -40,6 +44,8 @@ public class WebSoketKonfiguracija  implements WebSocketMessageBrokerConfigurer 
         return false;
     }
 
+
+    /// Konfa Brokera
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.enableSimpleBroker("/korisnik");

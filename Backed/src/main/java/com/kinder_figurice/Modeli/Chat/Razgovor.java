@@ -1,6 +1,5 @@
 package com.kinder_figurice.modeli.Chat;
 
-
 import com.kinder_figurice.modeli.Korisnik;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,15 +14,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "razgovor_poruka")
+@Table(name = "razgovor")
 public class Razgovor {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
-    @ManyToOne
-    @JoinColumn(name = "razgovor_Soba_Id", nullable = false)
     private String idRazgovora;
 
     @ManyToOne
@@ -36,8 +33,6 @@ public class Razgovor {
 
     private String tekstPoruke;
 
+    @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime vrijeme;
-
-
-
 }

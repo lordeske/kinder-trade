@@ -11,4 +11,6 @@ public interface RazgovorRepo extends JpaRepository<com.kinder_figurice.modeli.C
     List<Razgovor> findByIdRazgovora(String idRazgovora);
 
 
+
+
 }

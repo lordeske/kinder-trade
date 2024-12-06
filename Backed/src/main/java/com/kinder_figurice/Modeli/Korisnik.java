@@ -32,12 +32,14 @@ public class Korisnik {
 
     private String slika;
 
-    private String uloga;
+    private Role uloga;
 
-    private Boolean isVerified = true;
+    private Boolean isVerified;
+
 
     private String provider;
 
+    @Column(unique = true)
     private String providerId;
 
     private LocalDateTime datumKreiranja;
@@ -48,4 +50,25 @@ public class Korisnik {
     @JsonIgnore
     private List<Figurica> figurice;
 
+
+
+
+
+    // Omogucava update svaki put da ne pozivam u funckiji nad servisom
+    @PrePersist
+    public void onCreate()
+    {
+
+        this.datumKreiranja = LocalDateTime.now();
+
+    }
+
+
+    @PreUpdate
+    public void onUpdate()
+    {
+        this.datumAzuriranja = LocalDateTime.now();
+    }
 }
+
+

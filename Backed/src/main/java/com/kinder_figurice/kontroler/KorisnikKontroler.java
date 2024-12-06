@@ -79,6 +79,11 @@ public class KorisnikKontroler {
     }
 
 
+
+
+
+
+
     @GetMapping("/{imeKorisnika}")
     public ResponseEntity<PrikazKorisnikaDrugimaDTO> prikaziProfilKorisnika(
             @PathVariable String imeKorisnika
