@@ -1,6 +1,7 @@
 package com.kinder_figurice.kontroler;
 
 
+import com.kinder_figurice.dto.AuthResponseDTO.AuthResponseDTO;
 import com.kinder_figurice.dto.KorisnikDTO.LoginDTO;
 import com.kinder_figurice.dto.KorisnikDTO.RegistracijaDTO;
 import com.kinder_figurice.exceptions.UserNameExistException;
@@ -31,7 +32,7 @@ public class AutentifikacijaKontroler {
 
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginKorisnika(
+    public ResponseEntity<AuthResponseDTO> loginKorisnika(
             @RequestBody LoginDTO loginDTO)
     {
 
@@ -39,12 +40,12 @@ public class AutentifikacijaKontroler {
 
             korisnikServis.loginKorisnika(loginDTO);
 
-            return new ResponseEntity<>("Logovanje uspesnp", HttpStatus.CREATED);
+            return new ResponseEntity<>(new AuthResponseDTO(korisnikServis.loginKorisnika(loginDTO)), HttpStatus.CREATED);
 
         }
         catch (EntityNotFoundException e)
         {
-            return new ResponseEntity<>("Korisnik ne postoji", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
 

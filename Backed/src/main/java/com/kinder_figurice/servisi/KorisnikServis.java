@@ -1,6 +1,7 @@
 package com.kinder_figurice.servisi;
 
 
+import com.kinder_figurice.Konfiguracija.JWTGenerator;
 import com.kinder_figurice.dto.KorisnikDTO.AzurirajKorisnikaDTO;
 import com.kinder_figurice.dto.KorisnikDTO.LoginDTO;
 import com.kinder_figurice.dto.KorisnikDTO.PrikazKorisnikaDrugimaDTO;
@@ -36,6 +37,10 @@ public class KorisnikServis {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+
+    @Autowired
+    private JWTGenerator jwtGenerator;
 
 
     public List<Korisnik> sviKorisnici()
@@ -95,7 +100,7 @@ public class KorisnikServis {
     }
 
 
-    public void loginKorisnika(LoginDTO loginDTO) {
+    public String loginKorisnika(LoginDTO loginDTO) {
 
         if (loginDTO.getKorisnickoIme() == null || loginDTO.getKorisnickoIme().isEmpty()) {
             throw new IllegalArgumentException("Korisničko ime ne sme biti null ili prazno!");
@@ -116,6 +121,7 @@ public class KorisnikServis {
 
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        return jwtGenerator.generisiToken(authentication);
     }
 
 

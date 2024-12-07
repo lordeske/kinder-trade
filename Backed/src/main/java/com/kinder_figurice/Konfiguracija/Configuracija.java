@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.lang.reflect.Method;
 
@@ -26,28 +28,31 @@ import java.lang.reflect.Method;
 public class Configuracija {
 
 
+    private JWTAuthEntryPoint authEntryPoint;
 
 
-
+    @Autowired
+    public Configuracija(JWTAuthEntryPoint authEntryPoint) {
+        this.authEntryPoint = authEntryPoint;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPoint)) //custom entry point za neuspele autentifikacije
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-
-                        // Dodati kasnije za ROLE
-                        //.requestMatchers(HttpMethod.GET).permitAll()
-
-                        .anyRequest().permitAll()
-
+                        .requestMatchers("api/autentifikacija/**").permitAll()
+                        .anyRequest().authenticated() // Zahteva autentifikaciju za sve ostale rute
                 )
-
-                .httpBasic(Customizer.withDefaults());
-
+                .httpBasic(Customizer.withDefaults()) // Omogućava HTTP Basic autentifikaciju (možeš ovo izostaviti ako koristiš samo JWT)
+                .addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class); // Dodaje tvoj JWT filter pre UsernamePasswordAuthenticationFilter
 
         return http.build();
     }
+
+
 
 
 
@@ -60,6 +65,15 @@ public class Configuracija {
     {
         return auth.getAuthenticationManager();
     }
+
+
+
+    @Bean
+    public JWTAuthFilter jwtAuthFilter()
+    {
+        return new JWTAuthFilter();
+    }
+
 
 
 
