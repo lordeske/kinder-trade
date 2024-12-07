@@ -23,7 +23,7 @@ public class WebSoketKonfiguracija  implements WebSocketMessageBrokerConfigurer 
     /// Kreiranje endpointa
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-       registry.addEndpoint("/chatEndpoint").withSockJS();
+       registry.addEndpoint("/chat").withSockJS();
     }
 
 
@@ -46,14 +46,11 @@ public class WebSoketKonfiguracija  implements WebSocketMessageBrokerConfigurer 
 
 
     /// Konfa Brokera
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/korisnik");
+        registry.enableSimpleBroker("/topic");
         registry.setApplicationDestinationPrefixes("/app");
-        registry.setUserDestinationPrefix("/korisnik");
-    }
 
 
-
-
-}
+    }}

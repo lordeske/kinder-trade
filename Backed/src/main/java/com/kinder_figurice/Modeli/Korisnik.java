@@ -34,13 +34,7 @@ public class Korisnik {
 
     private Role uloga;
 
-    private Boolean isVerified;
 
-
-    private String provider;
-
-    @Column(unique = true)
-    private String providerId;
 
     private LocalDateTime datumKreiranja;
 

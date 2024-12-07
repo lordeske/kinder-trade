@@ -40,14 +40,14 @@ public class Configuracija {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPoint)) //custom entry point za neuspele autentifikacije
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPoint)) // custom entry point za neuspele autentifikacije
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("api/autentifikacija/**").permitAll()
+                        .requestMatchers("api/autentifikacija/**", "api/poruke/**").permitAll()
                         .anyRequest().authenticated() // Zahteva autentifikaciju za sve ostale rute
                 )
-                .httpBasic(Customizer.withDefaults()) // Omogućava HTTP Basic autentifikaciju (možeš ovo izostaviti ako koristiš samo JWT)
-                .addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class); // Dodaje tvoj JWT filter pre UsernamePasswordAuthenticationFilter
+                .httpBasic(Customizer.withDefaults())
+                .addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
