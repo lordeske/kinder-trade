@@ -16,41 +16,17 @@ import java.util.List;
 
 @Configuration
 @EnableWebSocketMessageBroker
-public class WebSoketKonfiguracija  implements WebSocketMessageBrokerConfigurer {
+public class WebSoketKonfiguracija implements WebSocketMessageBrokerConfigurer {
 
-
-
-    /// Kreiranje endpointa
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-       registry.addEndpoint("/chat").withSockJS();
+        registry.addEndpoint("/ws").setAllowedOrigins("*").withSockJS();
     }
 
-
-    /// Konfa za prenos poruka u JSON formatu
     @Override
-    public boolean configureMessageConverters(List<MessageConverter> messageConverters) {
-
-
-        DefaultContentTypeResolver resolver = new DefaultContentTypeResolver();
-        resolver.setDefaultMimeType(MimeTypeUtils.APPLICATION_JSON);
-
-
-        MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
-        converter.setObjectMapper(new ObjectMapper());
-        converter.setContentTypeResolver(resolver);
-        messageConverters.add(converter);
-
-        return false;
+    public void configureMessageBroker(MessageBrokerRegistry config) {
+        config.enableSimpleBroker("/queue", "/topic");
+        config.setApplicationDestinationPrefixes("/app");
+        config.setUserDestinationPrefix("/user");
     }
-
-
-    /// Konfa Brokera
-
-    @Override
-    public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/topic");
-        registry.setApplicationDestinationPrefixes("/app");
-
-
-    }}
+}
