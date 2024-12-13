@@ -1,0 +1,119 @@
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Arial", sans-serif;
+}
+
+
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(to right, #0099ff, #0055ff);
+  overflow: hidden;
+}
+
+
+.container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+}
+
+
+.login-box {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  text-align: center;
+  position: relative;
+}
+
+
+.title {
+  font-size: 28px;
+  color: #000;
+  margin-bottom: 15px;
+}
+
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #0055ff;
+  color: #fff;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.submit-btn:disabled {
+  background-color: #ccc;
+}
+
+
+.message-success {
+  color: green;
+  margin-top: 10px;
+}
+
+.message-error {
+  color: red;
+  margin-top: 10px;
+}
+
+.spinner {
+  margin: 20px auto;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #0055ff;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.circle {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background: rgba(0, 85, 255, 0.1);
+  border-radius: 50%;
+}
+
+.circle-one {
+  top: -50px;
+  left: -50px;
+}
+
+.circle-two {
+  bottom: -50px;
+  right: -50px;
+}
