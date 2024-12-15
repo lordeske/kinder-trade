@@ -65,12 +65,13 @@ export async function obrisiKorisnika(idKorisnika) {
   }
 }
 
-export async function prikaziKorisnikaDrugima(idKorisnika) {
+export async function prikaziKorisnikaDrugima(imeKorisnika) {
   try {
-    const response = await api.get(`/${idKorisnika}`);
+    const response = await api.get(`/profil/${imeKorisnika}`);
+    console.log("Dobijeni podaci:",response.data)
     return response.data;
   } catch (error) {
-    console.error("Greška prilikom prikaza korisnika:", idKorisnika);
+    console.error("Greška prilikom prikaza korisnika:", imeKorisnika);
     throw error;
   }
 }

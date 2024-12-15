@@ -76,48 +76,50 @@ const Login = () => {
     };
 
     return (
-        <div className="container">
-            <div className="login-box">
-                <div className="circle circle-one"></div>
-                <div className="form-box">
-                    <h1 className="title">Kreiraj profil</h1>
-                    <form onSubmit={kreirajProfil}>
-                        <input
-                            type="text"
-                            placeholder="Vaše korisničko ime:"
-                            id="name"
-                            value={korisnickoIme}
-                            onChange={handleInputCiscenje(setKorisnickoIme)}
-                            required
-                        />
-                        <input
-                            type="email"
-                            placeholder="Email:"
-                            id="email"
-                            value={email}
-                            onChange={handleInputCiscenje(setEmail)}
-                            required
-                        />
-                        <input
-                            type="password"
-                            placeholder="Lozinka:"
-                            id="password"
-                            value={lozinka}
-                            onChange={handleInputCiscenje(setLozinka)}
-                            required
-                        />
-                        <button className="submit-btn" type="submit" disabled={loading}>
-                            {loading ? "Kreiranje..." : "Kreiraj profil"}
-                        </button>
-                    </form>
-                    {loading && <div className="spinner"></div>}
-                    {!loading && poruka && <p className="message-success">{poruka}</p>}
-                    {!loading && greska && <p className="message-error">{greska}</p>}
-                </div>
-                <div className="circle circle-two"></div>
-            </div>
-            <div className="theme-btn-container"></div>
+        <div className="login-page">
+      <div className="container">
+        <div className="login-box">
+          <div className="circle circle-one"></div>
+          <div className="form-box">
+            <h1 className="title">Kreiraj profil</h1>
+            <form onSubmit={kreirajProfil}>
+              <input
+                type="text"
+                placeholder="Vaše korisničko ime:"
+                id="name"
+                value={korisnickoIme}
+                onChange={handleInputCiscenje(setKorisnickoIme)}
+                required
+              />
+              <input
+                type="email"
+                placeholder="Email:"
+                id="email"
+                value={email}
+                onChange={handleInputCiscenje(setEmail)}
+                required
+              />
+              <input
+                type="password"
+                placeholder="Lozinka:"
+                id="password"
+                value={lozinka}
+                onChange={handleInputCiscenje(setLozinka)}
+                required
+              />
+              <button className="submit-btn" type="submit" disabled={loading}>
+                {loading ? "Kreiranje..." : "Kreiraj profil"}
+              </button>
+            </form>
+            {loading && <div className="spinner"></div>}
+            {!loading && poruka && <p className="message-success">{poruka}</p>}
+            {!loading && greska && <p className="message-error">{greska}</p>}
+          </div>
+          <div className="circle circle-two"></div>
         </div>
+        <div className="theme-btn-container"></div>
+      </div>
+    </div>
 
     );
 };
