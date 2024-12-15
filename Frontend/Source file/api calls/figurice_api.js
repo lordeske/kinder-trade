@@ -73,6 +73,18 @@ export async function getFiguricaById(id) {
     }
   }
   
+
+  export async function getFiguriceZaKorisnickoIme(korisnickoIme) {
+    try {
+      const response = await api.get(`/profil/${korisnickoIme}`);
+      console.log("Dobijene figurice: ", response.data)
+      return response.data;
+    } catch (error) {
+      console.error(`Greška prilikom dohvatanja figurica za korisnika sa imenom ${korisnickoIme}:`, error);
+      throw error;
+    }
+  }
+  
   
   
   

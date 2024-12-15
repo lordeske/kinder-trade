@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { prikaziKorisnikaDrugima } from '../api calls/korisnik_api';
+import { getFiguriceZaKorisnickoIme } from '../api calls/figurice_api';
 import '../css folder/ProfilKorisnika.css';
 
 
@@ -11,9 +12,11 @@ import '../css folder/ProfilKorisnika.css';
 const ProfilKorisnika = () => {
 
 
-    const { imeKorisnika } = useParams();
+    const { korisnickoIme } = useParams();
     const [korisnik, setKorisnik] = useState({});
-    const [loading, setLoading] = useState(true);
+    const [figurice, setFigurice] = useState({});
+    const [loadingKorisnik, setLoadingKorisnik] = useState(true);
+    const [lodaingFigurice, setLoadingFigurice] = useState(true);
     const [greska, setGreska] = useState(null);
 
 
@@ -29,32 +32,55 @@ const ProfilKorisnika = () => {
             setGreska("Desila se greska prilikom prikaza korisnika")
         }
         finally {
-            setLoading(false)
+            setLoadingKorisnik(false)
+
+        }
+
+    }
+
+
+    const dobijFiguriceKorisnika = async (imeKorisnika) => {
+
+        try {
+            const dobijeneFigurice = await getFiguriceZaKorisnickoIme(imeKorisnika)
+            setFigurice(dobijeneFigurice);
+            console.log(figurice)
+
+        } catch (error) {
+            console.log("Desila se greska prilikom prikaza korisnika", error)
+            setGreska("Desila se greska prilikom prikaza korisnika")
+        }
+        finally {
+            setLoadingFigurice(false)
 
         }
 
     }
 
     const formatirajDatum = (datum) => {
-        return new Intl.DateTimeFormat('eng', {
+        const parsedDate = new Date(datum);
+        if (isNaN(parsedDate)) {
+            return 'Nevalidan datum';
+        }
+        return new Intl.DateTimeFormat('en', {
             day: 'numeric',
             month: 'long',
             year: 'numeric',
 
+        }).format(parsedDate);
+    };
 
-
-        }).format(new Date(datum));
-    }
 
 
 
     useEffect(() => {
 
-        dobijKorisnika(imeKorisnika)
+        dobijKorisnika(korisnickoIme)
+        dobijFiguriceKorisnika(korisnickoIme)
 
 
 
-    }, [imeKorisnika])
+    }, [korisnickoIme])
 
 
 
@@ -72,31 +98,41 @@ const ProfilKorisnika = () => {
 
 
     return (
+
         <div className="profile-page">
-
-            <div className="profile-info">
-                <img src="profile.jpg" alt="Profile" />
-                <h2>Ime Korisnika</h2>
-                <p>Datum kreiranja: 01.01.2020</p>
-            </div>
-
-
-            <div className="posts">
-                {[...Array(12)].map((_, index) => (
-                    <div key={index} className="post-box"></div>
-                ))}
-            </div>
-
-
-            <div className="suggested-profiles">
-                <h3>Predloženi Profili</h3>
-                {['Korisnik 1', 'Korisnik 2', 'Korisnik 3'].map((name, index) => (
-                    <div key={index} className="suggested-profile">
-                        <img src={`user${index + 1}.jpg`} alt={name} />
-                        <p>{name}</p>
+            {loadingKorisnik ? (
+                <div className="loading-container">
+                    <div className="spinner"></div>
+                    <p>Učitavanje korisničkih podataka...</p>
+                </div>
+            ) : (
+                <>
+                    
+                    <div className="profile-info">
+                        <img src="/publicslike/avatar.jpeg" alt="Profile" />
+                        <h2>{korisnik.korisnickoIme || "Učitavanje..."}</h2>
+                        <p>{`Datum kreiranja: ${korisnik.datumKreiranja ? formatirajDatum(korisnik.datumKreiranja) : "Učitavanje..."}`}</p>
                     </div>
-                ))}
-            </div>
+
+
+                    <div className="posts">
+                        {[...Array(12)].map((_, index) => (
+                            <div key={index} className="post-box"></div>
+                        ))}
+                    </div>
+
+
+                    <div className="suggested-profiles">
+                        <h3>Predloženi Profili</h3>
+                        {['Korisnik 1', 'Korisnik 2', 'Korisnik 3'].map((name, index) => (
+                            <div key={index} className="suggested-profile">
+                                <img src={`user${index + 1}.jpg`} alt={name} />
+                                <p>{name}</p>
+                            </div>
+                        ))}
+                    </div>
+                </>
+            )}
         </div>
 
     );

@@ -13,7 +13,7 @@ function App() {
       <div className="app-container">
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/profil/:imeKorisnika" element={<ProfilKorisnika />} />
+          <Route path="/profil/:korisnickoIme" element={<ProfilKorisnika />} />
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       </div>
