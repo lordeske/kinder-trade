@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { prikaziKorisnikaDrugima } from '../api calls/korisnik_api';
+import { prikaziKorisnikaDrugima, getPredlozeniKorisnici } from '../api calls/korisnik_api';
 import { getFiguriceZaKorisnickoIme } from '../api calls/figurice_api';
 import '../css folder/ProfilKorisnika.css';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -12,11 +13,16 @@ import '../css folder/ProfilKorisnika.css';
 const ProfilKorisnika = () => {
 
 
+    const navigacija = useNavigate();
+
     const { korisnickoIme } = useParams();
     const [korisnik, setKorisnik] = useState({});
     const [figurice, setFigurice] = useState({});
+    const [predlozeniKorisnici, setPredlozeniKorisnici] = useState({});
     const [loadingKorisnik, setLoadingKorisnik] = useState(true);
-    const [lodaingFigurice, setLoadingFigurice] = useState(true);
+    const [loadingFigurice, setLoadingFigurice] = useState(true);
+    const [loadingPredlozeniKorisnici, setLoadingPredlozeni] = useState(true);
+
     const [greska, setGreska] = useState(null);
 
 
@@ -57,6 +63,25 @@ const ProfilKorisnika = () => {
 
     }
 
+
+    const dobijPredlozeneKorisnike = async () => {
+
+        try {
+            const dobijeniPredlozeniKorisnici = await getPredlozeniKorisnici()
+            setPredlozeniKorisnici(dobijeniPredlozeniKorisnici);
+            console.log(predlozeniKorisnici)
+
+        } catch (error) {
+            console.log("Desila se greska prilikom prikaza predlozenih korisnika", error)
+            setGreska("Desila se greska prilikom prikaza predlozenih korisnika")
+        }
+        finally {
+            setLoadingPredlozeni(false)
+
+        }
+
+    }
+
     const formatirajDatum = (datum) => {
         const parsedDate = new Date(datum);
         if (isNaN(parsedDate)) {
@@ -77,6 +102,7 @@ const ProfilKorisnika = () => {
 
         dobijKorisnika(korisnickoIme)
         dobijFiguriceKorisnika(korisnickoIme)
+        dobijPredlozeneKorisnike()
 
 
 
@@ -100,39 +126,86 @@ const ProfilKorisnika = () => {
     return (
 
         <div className="profile-page">
-            {loadingKorisnik ? (
-                <div className="loading-container">
-                    <div className="spinner"></div>
-                    <p>Učitavanje korisničkih podataka...</p>
-                </div>
-            ) : (
-                <>
-                    
-                    <div className="profile-info">
-                        <img src="/publicslike/avatar.jpeg" alt="Profile" />
+            {/*trenutni korisnik*/}
+            <div className="profile-info">
+                {loadingKorisnik ? (
+                    <>
+                        <div className="spinner"></div>
+                        <p>Učitavanje korisničkih podataka...</p>
+                    </>
+                ) : (
+                    <>
+                        <img
+                            src="/publicslike/avatar.jpeg"
+                            alt="Profilna slika"
+                            className="profile-avatar"
+                        />
                         <h2>{korisnik.korisnickoIme || "Učitavanje..."}</h2>
-                        <p>{`Datum kreiranja: ${korisnik.datumKreiranja ? formatirajDatum(korisnik.datumKreiranja) : "Učitavanje..."}`}</p>
-                    </div>
+                        <p>
+                            {`Datum kreiranja: ${korisnik.datumKreiranja ? formatirajDatum(korisnik.datumKreiranja) : "Učitavanje..."
+                                }`}
+                        </p>
+                    </>
+                )}
+            </div>
 
+            {/* figurice korisnika */}
+            <div className="posts">
+                {loadingFigurice ? (
+                    <>
+                        <div className="spinner"></div>
+                        <p>Učitavanje figurica...</p>
+                    </>
+                ) : (
+                    <>
+                        {figurice.length > 0 ? (
+                            figurice.map((figurica, index) => (
+                                <div key={index} className="post-box">
+                                    <img
+                                        src={figurica.slikaUrl || "/publicslike/default-figurica.jpg"}
+                                        alt={figurica.naslov || "Figurica"}
+                                        className="figurica-slika"
+                                    />
+                                    <p>{figurica.naslov || "Nepoznata figurica"}</p>
+                                    <p>{figurica.cena || "Opis nije dostupan."}</p>
+                                </div>
+                            ))
+                        ) : (
+                            <p>Nema dostupnih figurica za prikaz.</p>
+                        )}
+                    </>
+                )}
+            </div>
 
-                    <div className="posts">
-                        {[...Array(12)].map((_, index) => (
-                            <div key={index} className="post-box"></div>
-                        ))}
-                    </div>
-
-
-                    <div className="suggested-profiles">
+            {/* predlozeni profili */}
+            <div className="suggested-profiles">
+                {loadingPredlozeniKorisnici ? (
+                    <>
+                        <div className="spinner"></div>
+                        <p>Učitavanje predloženih profila...</p>
+                    </>
+                ) : (
+                    <>
                         <h3>Predloženi Profili</h3>
-                        {['Korisnik 1', 'Korisnik 2', 'Korisnik 3'].map((name, index) => (
-                            <div key={index} className="suggested-profile">
-                                <img src={`user${index + 1}.jpg`} alt={name} />
-                                <p>{name}</p>
-                            </div>
-                        ))}
-                    </div>
-                </>
-            )}
+                        {predlozeniKorisnici.length > 0 ? (
+                            predlozeniKorisnici.map((predlozeniKorisnik, index) => (
+                                <div key={index} className="suggested-profile">
+                                    <img
+                                        src={`user${index + 1}.jpg`}
+                                        alt={`Slika korisnika`}
+                                        className="suggested-profile-avatar"
+                                    />
+                                    <p onClick={() => navigacija(`/profil/${predlozeniKorisnik.korisnickoIme}`)}>
+                                        {predlozeniKorisnik.korisnickoIme}
+                                    </p>
+                                </div>
+                            ))
+                        ) : (
+                            <p>Nema predloženih profila za prikaz.</p>
+                        )}
+                    </>
+                )}
+            </div>
         </div>
 
     );

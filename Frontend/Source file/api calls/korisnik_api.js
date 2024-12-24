@@ -75,3 +75,18 @@ export async function prikaziKorisnikaDrugima(imeKorisnika) {
     throw error;
   }
 }
+
+
+export async function getPredlozeniKorisnici() {
+  try {
+    const response = await api.get("/predlozeni");
+    console.log("Dobijeni predlozeni korisnici:",response.data)
+    return response.data;
+  } catch (error) {
+    console.error("Greška prilikom prikaza predlozenih korisnika:", );
+    throw error;
+  }
+}
+
+
+
