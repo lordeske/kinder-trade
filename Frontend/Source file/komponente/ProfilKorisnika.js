@@ -67,7 +67,7 @@ const ProfilKorisnika = () => {
     const dobijPredlozeneKorisnike = async () => {
 
         try {
-            const dobijeniPredlozeniKorisnici = await getPredlozeniKorisnici()
+            const dobijeniPredlozeniKorisnici = await getPredlozeniKorisnici(korisnickoIme)
             setPredlozeniKorisnici(dobijeniPredlozeniKorisnici);
             console.log(predlozeniKorisnici)
 
@@ -162,10 +162,11 @@ const ProfilKorisnika = () => {
                             figurice.map((figurica, index) => (
                                 <div key={index} className="post-box">
                                     <img
-                                        src={figurica.slikaUrl || "/publicslike/default-figurica.jpg"}
+                                        src={`/publicslike/${figurica.naslov}.jpg`}
                                         alt={figurica.naslov || "Figurica"}
                                         className="figurica-slika"
                                     />
+
                                     <p>{figurica.naslov || "Nepoznata figurica"}</p>
                                     <p>{figurica.cena || "Opis nije dostupan."}</p>
                                 </div>

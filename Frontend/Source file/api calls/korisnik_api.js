@@ -77,9 +77,9 @@ export async function prikaziKorisnikaDrugima(imeKorisnika) {
 }
 
 
-export async function getPredlozeniKorisnici() {
+export async function getPredlozeniKorisnici(korisnickoIme) {
   try {
-    const response = await api.get("/predlozeni");
+    const response = await api.get(`/predlozeni/${korisnickoIme} `);
     console.log("Dobijeni predlozeni korisnici:",response.data)
     return response.data;
   } catch (error) {
