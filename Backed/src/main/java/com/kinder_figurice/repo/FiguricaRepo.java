@@ -15,5 +15,7 @@ public interface FiguricaRepo extends JpaRepository<Figurica, Long> {
 
    List<Figurica> findByNaslov(String naslov);
    List<Figurica> findByKorisnikId(Long idKorisnika);
+   List<Figurica> findByKorisnik_KorisnickoIme(String korisnickoIme);
+
 
 }

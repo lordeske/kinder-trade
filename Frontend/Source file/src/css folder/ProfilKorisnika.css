@@ -1,0 +1,207 @@
+/* Osnovni stilovi za celu stranicu */
+.profile-page * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Glavni layout */
+.profile-page {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    height: 95vh;
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+
+/* Sekcija sa informacijama o profilu */
+.profile-page .profile-info {
+    width: 20%;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.profile-page .profile-info img {
+    width: 100%;
+    border-radius: 50%;
+    margin-bottom: 15px;
+}
+
+.profile-page .profile-info h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.profile-page .profile-info p {
+    font-size: 14px;
+    color: #777;
+}
+
+.profile-page .posts {
+    width: 50%; /* Smanjena širina sekcije */
+    flex-grow: 1; /* Zauzima sav preostali prostor */
+    display: flex;
+    flex-wrap: wrap; /* Elementi i dalje mogu prelaziti u redove */
+    gap: 20px;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow-y: auto; /* Omogućava vertikalni skrol */
+    max-height: 100%; /* Ograničava visinu box-a */
+    height: 100%; /* Sprečava promenu veličine */
+    scrollbar-width: thin; /* Stil za skrol traku (Firefox) */
+    scrollbar-color: #ccc #f4f4f4;
+}
+
+
+
+/* Stilovi za vertikalni skrol */
+.profile-page .posts::-webkit-scrollbar {
+    width: 8px; /* Širina trake za vertikalni skrol */
+}
+
+.profile-page .posts::-webkit-scrollbar-thumb {
+    background: #ccc; /* Boja "palca" */
+    border-radius: 4px;
+}
+
+.profile-page .posts::-webkit-scrollbar-track {
+    background: #f4f4f4; /* Boja pozadine trake */
+}
+
+
+/* Kartica figurice */
+.profile-page .post-box {
+    flex: 0 0 calc(33.33% - 20px); /* Tri kolone po redu */
+    max-width: calc(33.33% - 20px); /* Sprečava promenu širine */
+    height: 220px; /* Fiksna visina kartice */
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+
+.profile-page .post-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.profile-page .post-box img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.profile-page .post-box p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #555;
+    text-align: center;
+    line-height: 1.4;
+}
+
+.profile-page .post-box p:last-of-type {
+    font-weight: bold;
+    color: #333;
+}
+
+/* Sekcija za predložene profile */
+.profile-page .suggested-profiles {
+    width: 22%;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    height: 100%;
+}
+
+.profile-page .suggested-profiles h3 {
+    margin-bottom: 15px;
+}
+
+.profile-page .suggested-profile {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.profile-page .suggested-profile img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.profile-page .suggested-profile p {
+    font-size: 14px;
+}
+
+/* Loading container stilovi */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsivnost */
+@media (max-width: 768px) {
+    .profile-page {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .profile-page .profile-info,
+    .profile-page .posts,
+    .profile-page .suggested-profiles {
+        width: 100%;
+    }
+
+    .profile-page .posts {
+        flex-wrap: nowrap;
+        gap: 15px;
+    }
+
+    .profile-page .post-box {
+        width: calc(50% - 15px);
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-page .post-box {
+        width: 100%;
+    }
+}

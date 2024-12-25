@@ -79,12 +79,19 @@ public class KorisnikKontroler {
     }
 
 
+    @GetMapping("/predlozeni/{trenutniKorisnik}")
+    public List<PrikazKorisnikaDrugimaDTO> prikaziPredlozeneKorisnike(
+            @PathVariable String trenutniKorisnik
+    ) {
+
+        return korisnikServis.prikaziPredlozeneKorisnike(trenutniKorisnik);
+    }
 
 
 
 
 
-    @GetMapping("/{imeKorisnika}")
+    @GetMapping("/profil/{imeKorisnika}")
     public ResponseEntity<PrikazKorisnikaDrugimaDTO> prikaziProfilKorisnika(
             @PathVariable String imeKorisnika
     )

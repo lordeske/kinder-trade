@@ -138,6 +138,22 @@ public class FiguricaServis {
 
     }
 
+    public List<FiguricaDTO> sveFiguriceKorisnikaPoImenu(String imeKorisnika)
+    {
+
+        List<Figurica> nizFigurica = figuricaRepo.findByKorisnik_KorisnickoIme(imeKorisnika);
+
+        if (nizFigurica != null) {
+            return  mapirajObjekatFiguriceUDTO(nizFigurica);
+        } else {
+            throw new EntityNotFoundException("Desila se greska sa pretragom za korisnika" + imeKorisnika);
+        }
+
+
+
+
+    }
+
 
     /// Funckije basic
 

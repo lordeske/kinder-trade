@@ -36,6 +36,8 @@ public class Configuracija {
         this.authEntryPoint = authEntryPoint;
     }
 
+
+    /*
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -48,6 +50,22 @@ public class Configuracija {
                 )
                 .httpBasic(Customizer.withDefaults())
                 .addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+    */
+
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults()) // Omogućava CORS sa podrazumevanim podešavanjima
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll() // Dozvoli sve zahteve bez autentifikacije
+                )
+                .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }

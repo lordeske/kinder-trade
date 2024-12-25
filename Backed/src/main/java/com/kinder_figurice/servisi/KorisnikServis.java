@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -167,12 +168,39 @@ public class KorisnikServis {
             prikazKorisnika.setSlika(dobijeniKorisnik.getSlika());
 
             prikazKorisnika.setKorisnickoIme(dobijeniKorisnik.getKorisnickoIme());
+            prikazKorisnika.setDatumKreiranja(dobijeniKorisnik.getDatumKreiranja());
 
             return prikazKorisnika;
         } else {
             throw new EntityNotFoundException("Korisnik nije pronađen");
         }
     }
+
+
+    public List<PrikazKorisnikaDrugimaDTO> prikaziPredlozeneKorisnike(String trenutniKorisnik) {
+
+
+        List<Korisnik> listaKorisnika = korisnikRepo.prikaziPredlozeneProfile(trenutniKorisnik);
+
+
+        List<PrikazKorisnikaDrugimaDTO> predlozeniKorisnici = new ArrayList<>();
+
+
+        for (Korisnik korisnik : listaKorisnika) {
+
+            PrikazKorisnikaDrugimaDTO dto = new PrikazKorisnikaDrugimaDTO();
+            dto.setKorisnickoIme(korisnik.getKorisnickoIme());
+            dto.setDatumKreiranja(korisnik.getDatumKreiranja());
+            dto.setDatumKreiranja(korisnik.getDatumKreiranja());
+
+
+            predlozeniKorisnici.add(dto);
+        }
+
+
+        return predlozeniKorisnici;
+    }
+
 
 
 
