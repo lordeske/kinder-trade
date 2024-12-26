@@ -1,0 +1,143 @@
+.pocetna-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f4f4f4;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    height: 100vh; 
+    box-sizing: border-box;
+}
+
+.pocetna-posts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow-y: auto; 
+    max-height: calc(100vh - 60px); 
+    box-sizing: border-box;
+}
+
+.pocetna-post-box {
+    flex: 0 0 calc(33.33% - 20px); 
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    height: 250px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.pocetna-post-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.pocetna-post-box img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.pocetna-post-box p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #555;
+    line-height: 1.4;
+}
+
+.pocetna-post-box p:last-of-type {
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+}
+
+.pocetna-spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.pocetna-error-message {
+    color: red;
+    text-align: center;
+    margin-top: 10px;
+}
+
+
+/* Stilovi za dugmad */
+.pocetna-button-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px; 
+    margin-top: 10px;
+}
+
+.pocetna-button {
+    padding: 8px 15px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+}
+
+.pocetna-button-primary {
+    background-color: #3498db; 
+    color: white;
+}
+
+.pocetna-button-primary:hover {
+    background-color: #2980b9; 
+    transform: translateY(-2px); 
+}
+
+.pocetna-button-secondary {
+    background-color: #f1c40f; 
+    color: white;
+}
+
+.pocetna-button-secondary:hover {
+    background-color: #d4ac0d; 
+    transform: translateY(-2px); 
+}
+
+
+@media (max-width: 768px) {
+    .pocetna-button-container {
+        flex-direction: column;
+        gap: 5px; 
+    }
+
+    .pocetna-button {
+        width: 100%; 
+    }
+}

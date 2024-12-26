@@ -168,7 +168,7 @@ const ProfilKorisnika = () => {
                                     />
 
                                     <p>{figurica.naslov || "Nepoznata figurica"}</p>
-                                    <p>{figurica.cena || "Opis nije dostupan."}</p>
+                                    <p>{figurica.cena ? `${figurica.cena} RSD` : "Nema cene"}</p>
                                 </div>
                             ))
                         ) : (
