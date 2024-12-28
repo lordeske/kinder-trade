@@ -33,20 +33,10 @@ public class KorisnikKontroler {
     }
 
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Korisnik> nadjiKorisnika(@PathVariable Long id) {
-        Optional<Korisnik> korisnik = korisnikServis.nadjiKorisnikaPoID(id);
-        if (korisnik.isPresent()) {
-            return new ResponseEntity<>(korisnik.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Korisnik> azurirajKorisnika(@PathVariable Long id, @RequestBody AzurirajKorisnikaDTO azuriraniKorisnik) {
+    @PutMapping("/azuriraj/{korisnickoIme}")
+    public ResponseEntity<Korisnik> azurirajKorisnika(@PathVariable String korisnickoIme, @RequestBody AzurirajKorisnikaDTO azuriraniKorisnik) {
         try {
-            Korisnik izmenjenKorisnik = korisnikServis.azurirajKorisnika(id, azuriraniKorisnik);
+            Korisnik izmenjenKorisnik = korisnikServis.azurirajKorisnika(korisnickoIme, azuriraniKorisnik);
             return new ResponseEntity<>(izmenjenKorisnik, HttpStatus.OK);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -67,16 +57,20 @@ public class KorisnikKontroler {
 
 
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> obrisiKorisnika(@PathVariable Long id) {
-        Optional<Korisnik> korisnik = korisnikServis.nadjiKorisnikaPoID(id);
-        if (korisnik.isPresent()) {
-            korisnikServis.obrisiKorisnika(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @DeleteMapping("/obrisi/{korisnickoIme}")
+    public ResponseEntity<String> obrisiKorisnika(@PathVariable String korisnickoIme) {
+        try {
+            korisnikServis.obrisiKorisnika(korisnickoIme);
+            return ResponseEntity.ok("Korisnik sa imenom " + korisnickoIme + " je uspesno obrisan.");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (SecurityException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Doslo je do greske.");
         }
     }
+
 
 
     @GetMapping("/predlozeni/{trenutniKorisnik}")

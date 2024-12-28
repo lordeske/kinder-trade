@@ -8,7 +8,7 @@ public class AzurirajKorisnikaDTO {
 
 
 
-    private String korisnickoIme;
+
 
     private String email;
 

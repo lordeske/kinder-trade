@@ -2,6 +2,8 @@ package com.kinder_figurice.servisi;
 
 
 import com.kinder_figurice.dto.FiguricaDTO.FiguricaDTO;
+import com.kinder_figurice.dto.FiguricaDTO.FiguricaPocetna;
+import com.kinder_figurice.dto.FiguricaDTO.FiguricaPrikaz;
 import com.kinder_figurice.dto.FiguricaDTO.FiguricaUpdateDTO;
 import com.kinder_figurice.modeli.Figurica;
 import com.kinder_figurice.modeli.Korisnik;
@@ -9,12 +11,17 @@ import com.kinder_figurice.repo.FiguricaRepo;
 import com.kinder_figurice.repo.KorisnikRepo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.sql.Struct;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class FiguricaServis {
@@ -33,110 +40,113 @@ public class FiguricaServis {
     }
 
 
-    public Optional<Figurica> findById(Long id) {
-        return figuricaRepo.findById(id);
+    public FiguricaPrikaz findById(Long id) {
+        Figurica figurica = figuricaRepo.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Figurica sa ID " + id + " nije pronađena."));
+
+        FiguricaPrikaz figuricaPrikaz = new FiguricaPrikaz();
+        figuricaPrikaz.setIdFigurice(figurica.getId());
+        figuricaPrikaz.setNaslov(figurica.getNaslov());
+        figuricaPrikaz.setOpis(figurica.getOpis());
+        figuricaPrikaz.setKategorija(figurica.getKategorija());
+        figuricaPrikaz.setCena(figurica.getCena());
+        figuricaPrikaz.setSlikaUrl(figurica.getSlikaUrl());
+        figuricaPrikaz.setVlasnikFigurice(figurica.getKorisnik().getKorisnickoIme());
+        figuricaPrikaz.setStanje(figurica.getStanje());
+
+        return figuricaPrikaz;
     }
 
 
-    public List<FiguricaDTO> nadjiPoNazivu(String naslovFigurice) {
-        List<Figurica> figurice = figuricaRepo.findByNaslov(naslovFigurice);
 
-        if (figurice != null && !figurice.isEmpty()) {
-            return mapirajObjekatFiguriceUDTO(figurice);
-        } else {
-            throw new EntityNotFoundException("Figurice sa nazivom: " + naslovFigurice + " nisu pronadjene.");
+
+
+
+    public List<FiguricaPocetna> dohvatiRandomFigurice(int limit) {
+
+        if (limit <= 0) {
+            throw new IllegalArgumentException("Limit mora biti veci od 0");
         }
+
+        List<Figurica> randomFigurice = figuricaRepo.dobaviRandomFigurice(limit);
+
+
+        return mapirajObjekatFiguricePocetna(randomFigurice);
     }
 
 
-    public FiguricaDTO kreirajFiguricu(FiguricaDTO figurica, Long idKorisnika) {
-        Optional<Korisnik> korisnikOptional = korisnikRepo.findById(idKorisnika);
-        if (korisnikOptional.isEmpty()) {
-            throw new EntityNotFoundException("Korisnik sa ID " + idKorisnika + " nije pronađen");
-        }
 
-        Figurica figuricaZaKreiranje = new Figurica();
-        figuricaZaKreiranje.setNaslov(figurica.getNaslov());
-        figuricaZaKreiranje.setCena(figurica.getCena());
-        figuricaZaKreiranje.setKategorija(figurica.getKategorija());
-        figuricaZaKreiranje.setStanje(figurica.getStanje());
-        figuricaZaKreiranje.setSlikaUrl(figurica.getSlikaUrl());
-        figuricaZaKreiranje.setDatumKreiranja(LocalDateTime.now());
-        figuricaZaKreiranje.setOpis(figurica.getOpis());
-        figuricaZaKreiranje.setKorisnik(korisnikOptional.get());
+    public FiguricaDTO kreirajFiguricu(FiguricaDTO figuricaNova) {
 
-        Figurica sacuvanaFigurica = figuricaRepo.save(figuricaZaKreiranje);
+        String korisickoImeIzTokena = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Korisnik korisnik = korisnikRepo.findByKorisnickoIme(korisickoImeIzTokena)
+                .orElseThrow(()-> new EntityNotFoundException("Korisnik nije pronadjen"));
 
 
-        FiguricaDTO kreiranaFiguricaDTO = new FiguricaDTO();
-        kreiranaFiguricaDTO.setNaslov(sacuvanaFigurica.getNaslov());
-        kreiranaFiguricaDTO.setCena(sacuvanaFigurica.getCena());
-        kreiranaFiguricaDTO.setKategorija(sacuvanaFigurica.getKategorija());
-        kreiranaFiguricaDTO.setStanje(sacuvanaFigurica.getStanje());
-        kreiranaFiguricaDTO.setSlikaUrl(sacuvanaFigurica.getSlikaUrl());
-        kreiranaFiguricaDTO.setDatumKreiranja(LocalDateTime.now());
+        Figurica figurica = new Figurica();
+        figurica.setNaslov(figuricaNova.getNaslov());
+        figurica.setCena(figuricaNova.getCena());
+        figurica.setKategorija(figuricaNova.getKategorija());
+        figurica.setStanje(figuricaNova.getStanje());
+        figurica.setSlikaUrl(figuricaNova.getSlikaUrl());
+        figurica.setOpis(figuricaNova.getOpis());
+        figurica.setKorisnik(korisnik);
 
-        return kreiranaFiguricaDTO;
+        Figurica sacuvanaFigurica = figuricaRepo.save(figurica);
+
+        return mapriajJednuUDto(sacuvanaFigurica);
+
+
     }
 
 
 
     public FiguricaDTO azurirajFiguricu(FiguricaUpdateDTO figuricaInsert, Long idFigurice) {
 
-        Optional<Figurica> dobijenaFigurica = figuricaRepo.findById(idFigurice);
-        if(dobijenaFigurica.isPresent())
-        {
-            Figurica figurica1 = dobijenaFigurica.get();
-            figurica1.setCena(figuricaInsert.getCena());
-            figurica1.setKategorija(figuricaInsert.getKategorija());
-            figurica1.setStanje(figuricaInsert.getStanje());
-            figurica1.setNaslov(figuricaInsert.getNaslov());
-            figurica1.setSlikaUrl(figuricaInsert.getSlikaUrl());
-            figurica1.setOpis(figuricaInsert.getOpis());
+        String korisnickoImeIzTokena = SecurityContextHolder.getContext().getAuthentication().getName();
 
-            figuricaRepo.save(figurica1);
-
-            FiguricaDTO figuricaDTO = new FiguricaDTO();
-            figuricaDTO.setCena(figuricaInsert.getCena());
-            figuricaDTO.setKategorija(figuricaInsert.getKategorija());
-            figuricaDTO.setStanje(figuricaInsert.getStanje());
-            figuricaDTO.setNaslov(figuricaInsert.getNaslov());
-            figuricaDTO.setSlikaUrl(figuricaInsert.getSlikaUrl());
-            figuricaDTO.setOpis(figuricaInsert.getOpis());
-            figuricaDTO.setDatumKreiranja(figurica1.getDatumKreiranja());
-
-            return figuricaDTO;
+        Figurica figurica = figuricaRepo.findById(idFigurice)
+                .orElseThrow(() -> new EntityNotFoundException("Figurica sa ID: " + idFigurice + " nije pronađena."));
 
 
-        }
-        else {
-            throw new RuntimeException("Figurica sa ID: " + idFigurice + " nije pronadjena.");
+        if (!figurica.getKorisnik().getKorisnickoIme().equals(korisnickoImeIzTokena)) {
+            throw new SecurityException("Nemate pravo da menjate ovu figuricu.");
         }
 
+        figurica.setCena(figuricaInsert.getCena());
+        figurica.setKategorija(figuricaInsert.getKategorija());
+        figurica.setStanje(figuricaInsert.getStanje());
+        figurica.setNaslov(figuricaInsert.getNaslov());
+        figurica.setSlikaUrl(figuricaInsert.getSlikaUrl());
+        figurica.setOpis(figuricaInsert.getOpis());
 
+
+        figuricaRepo.save(figurica);
+
+
+        return mapriajJednuUDto(figurica);
     }
 
 
     public void deleteById(Long id) {
-        figuricaRepo.deleteById(id);
-    }
+
+        String korisicnkoImeIzTokena = SecurityContextHolder.getContext().getAuthentication().getName();
 
 
-    public List<FiguricaDTO> sveFiguriceKorisnika(Long idKorisnika)
-    {
+        Figurica figurica = figuricaRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("Nije pronadjena figurica sa ID: "+ id));
 
-        List<Figurica> nizFigurica = figuricaRepo.findByKorisnikId(idKorisnika);
+        if(!figurica.getKorisnik().getKorisnickoIme().equals(korisicnkoImeIzTokena))
+        {
 
-        if (nizFigurica != null) {
-            return  mapirajObjekatFiguriceUDTO(nizFigurica);
-        } else {
-            throw new EntityNotFoundException("Desila se greska sa pretragom za korisnika" + idKorisnika);
+            throw new SecurityException("Nemate pravo da menjate ovu figuricu");
+
         }
-
-
-
-
+         figuricaRepo.deleteById(id);
     }
+
+
+
 
     public List<FiguricaDTO> sveFiguriceKorisnikaPoImenu(String imeKorisnika)
     {
@@ -171,6 +181,47 @@ public class FiguricaServis {
             figuricaDTO.setStanje(figurica.getStanje());
 
             potrebnaLista.add(figuricaDTO);
+        }
+
+        return potrebnaLista;
+    }
+
+    public FiguricaDTO mapriajJednuUDto(Figurica prilozenaFigurica) {
+        List<FiguricaDTO> potrebnaLista = new ArrayList<>();
+
+
+            FiguricaDTO figuricaDTO = new FiguricaDTO();
+            figuricaDTO.setNaslov(prilozenaFigurica.getNaslov());
+            figuricaDTO.setDatumKreiranja(prilozenaFigurica.getDatumKreiranja());
+            figuricaDTO.setOpis(prilozenaFigurica.getOpis());
+            figuricaDTO.setCena(prilozenaFigurica.getCena());
+            figuricaDTO.setKategorija(prilozenaFigurica.getKategorija());
+            figuricaDTO.setSlikaUrl(prilozenaFigurica.getSlikaUrl());
+            figuricaDTO.setStanje(prilozenaFigurica.getStanje());
+
+
+
+
+        return figuricaDTO;
+    }
+
+
+    public List<FiguricaPocetna> mapirajObjekatFiguricePocetna(List<Figurica> dataLista) {
+        List<FiguricaPocetna> potrebnaLista = new ArrayList<>();
+
+        for (Figurica figurica : dataLista) {
+            FiguricaPocetna figuricaPocetna = new FiguricaPocetna();
+            figuricaPocetna.setIdFigurice(figurica.getId());
+            figuricaPocetna.setNaslov(figurica.getNaslov());
+            figuricaPocetna.setDatumKreiranja(figurica.getDatumKreiranja());
+            figuricaPocetna.setOpis(figurica.getOpis());
+            figuricaPocetna.setCena(figurica.getCena());
+            figuricaPocetna.setKategorija(figurica.getKategorija());
+            figuricaPocetna.setSlikaUrl(figurica.getSlikaUrl());
+            figuricaPocetna.setStanje(figurica.getStanje());
+            figuricaPocetna.setVlasnikFigurice(figurica.getKorisnik().getKorisnickoIme());
+
+            potrebnaLista.add(figuricaPocetna);
         }
 
         return potrebnaLista;

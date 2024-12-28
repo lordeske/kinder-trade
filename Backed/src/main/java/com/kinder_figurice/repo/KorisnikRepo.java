@@ -2,6 +2,7 @@ package com.kinder_figurice.repo;
 
 import com.kinder_figurice.modeli.Korisnik;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -19,5 +20,9 @@ public interface KorisnikRepo extends JpaRepository<Korisnik, Long> {
 
         @Query(value = "SELECT * FROM korisnici WHERE korisnicko_ime != :trenutnoIme ORDER BY RAND() LIMIT 3", nativeQuery = true)
         List<Korisnik> prikaziPredlozeneProfile(@Param("trenutnoIme") String trenutnoIme);
+
+        @Modifying
+        @Query("DELETE FROM Korisnik k WHERE k.korisnickoIme = :korisnickoIme")
+        void deleteByKorisnickoIme(@Param("korisnickoIme") String korisnickoIme);
 
 }

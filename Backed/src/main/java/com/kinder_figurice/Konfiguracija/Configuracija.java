@@ -37,25 +37,31 @@ public class Configuracija {
     }
 
 
-    /*
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPoint)) // custom entry point za neuspele autentifikacije
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("api/autentifikacija/**", "api/poruke/**").permitAll()
-                        .anyRequest().authenticated() // Zahteva autentifikaciju za sve ostale rute
+
+                        .requestMatchers("/api/korisnici", "/api/korisnici/profil/**", "/api/korisnici").permitAll()
+
+                        .requestMatchers("/api/korisnici/azuriraj/**", "/api/korisnici/obrisi/**" ,"/api/figurice/kreiraj/**",
+                                "/api/figurice/azuriraj/**", "/api/figurice/obrisi/**" ).authenticated()
+                        .anyRequest().permitAll()
                 )
                 .httpBasic(Customizer.withDefaults())
                 .addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
-    */
 
 
+
+
+/*
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -70,6 +76,7 @@ public class Configuracija {
         return http.build();
     }
 
+ */
 
 
 
@@ -100,3 +107,4 @@ public class Configuracija {
         return new BCryptPasswordEncoder();
     }
 }
+

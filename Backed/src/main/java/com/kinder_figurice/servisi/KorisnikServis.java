@@ -14,6 +14,7 @@ import com.kinder_figurice.repo.KorisnikRepo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -73,57 +74,87 @@ public class KorisnikServis {
 
 
 
-    public void obrisiKorisnika(Long id) {
-        korisnikRepo.deleteById(id);
+    public void obrisiKorisnika(String korisnickoIme) {
+        String korisnickoImeIzTokena = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Korisnik korisnik = korisnikRepo.findByKorisnickoIme(korisnickoIme)
+                .orElseThrow(() -> new EntityNotFoundException("Korisnik nije pronadjen sa imenom: " + korisnickoIme));
+
+        System.out.println("Korisnik pronadjen: " + korisnik.getKorisnickoIme());
+
+        if (!korisnik.getKorisnickoIme().equals(korisnickoImeIzTokena)) {
+            throw new SecurityException("Nemate pravo da brišete drugog korisnika.");
+        }
+
+        korisnikRepo.deleteById(korisnik.getId());
+        System.out.println("Korisnik obrisan: " + korisnickoIme);
     }
 
 
-    public Korisnik azurirajKorisnika(Long id, AzurirajKorisnikaDTO azuriraniKorisnik) {
-        Optional<Korisnik> postojeciKorisnik = korisnikRepo.findById(id);
-        if (postojeciKorisnik.isPresent()) {
-            Korisnik korisnikZaCuvanje = postojeciKorisnik.get();
 
 
-            korisnikZaCuvanje.setKorisnickoIme(azuriraniKorisnik.getKorisnickoIme());
+    public Korisnik azurirajKorisnika(String korisnickoIme, AzurirajKorisnikaDTO azuriraniKorisnik) {
+
+        String korisnickoImeIzTokena = SecurityContextHolder.getContext().getAuthentication().getName();
 
 
-            if (azuriraniKorisnik.getLozinka() != null && !azuriraniKorisnik.getLozinka().isEmpty()) {
-                korisnikZaCuvanje.setLozinka(passwordEncoder.encode(azuriraniKorisnik.getLozinka()));
-            }
-
-            korisnikZaCuvanje.setSlika(azuriraniKorisnik.getSlika());
-
-
-            return korisnikRepo.save(korisnikZaCuvanje);
-        } else {
-            throw new RuntimeException("Korisnik sa ID: " + id + " nije pronađen.");
+        Optional<Korisnik> postojeciKorisnik = korisnikRepo.findByKorisnickoIme(korisnickoIme);
+        if(postojeciKorisnik.isEmpty())
+        {
+            throw new RuntimeException("Korisnik nije pronadjen sa imenom "+ korisnickoIme);
         }
+
+        Korisnik korisnikZaCuvanje = postojeciKorisnik.get();
+
+        if(!korisnikZaCuvanje.getKorisnickoIme().equals(korisnickoImeIzTokena))
+        {
+            throw new SecurityException("Nemate pravo da menjate podatke drugog korisnika.");
+        }
+
+
+        korisnikZaCuvanje.setEmail(azuriraniKorisnik.getEmail());
+
+        if(azuriraniKorisnik.getLozinka() != null && !azuriraniKorisnik.getLozinka().isEmpty())
+        {
+            korisnikZaCuvanje.setLozinka(passwordEncoder.encode(korisnikZaCuvanje.getLozinka()));
+        }
+
+        korisnikZaCuvanje.setSlika(azuriraniKorisnik.getSlika());
+
+
+        return korisnikRepo.save(korisnikZaCuvanje);
+
+
+
+
     }
 
 
     public String loginKorisnika(LoginDTO loginDTO) {
 
         if (loginDTO.getKorisnickoIme() == null || loginDTO.getKorisnickoIme().isEmpty()) {
-            throw new IllegalArgumentException("Korisničko ime ne sme biti null ili prazno!");
+            throw new IllegalArgumentException("Korisničko ime ne sme biti prazno!");
         }
 
+        try {
 
-        if (!korisnikRepo.existsByKorisnickoIme(loginDTO.getKorisnickoIme())) {
-            throw new EntityNotFoundException("Ne postoji takav korisnik");
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginDTO.getKorisnickoIme(),
+                            loginDTO.getLozinka()
+                    )
+            );
+
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+
+            return jwtGenerator.generisiToken(authentication);
+        } catch (BadCredentialsException e) {
+            throw new IllegalArgumentException("Pogrešno korisničko ime ili lozinka");
         }
-
-
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginDTO.getKorisnickoIme(),
-                        loginDTO.getLozinka()
-                )
-        );
-
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return jwtGenerator.generisiToken(authentication);
     }
+
 
 
     public  void registrujKorisnika(RegistracijaDTO registracijaDTO)
@@ -158,22 +189,17 @@ public class KorisnikServis {
 
 
     public PrikazKorisnikaDrugimaDTO nadjiKorisnikaPoImenu(String imeKorisnika) {
-        Korisnik korisnik = korisnikRepo.findByKorisnickoIme(imeKorisnika).orElseThrow(()->
-                new UsernameNotFoundException("Korisnik nije pronadjen"));
-        Optional<Korisnik> optionalKorisnik = Optional.ofNullable(korisnik);
 
-        if (optionalKorisnik.isPresent()) {
-            Korisnik dobijeniKorisnik = optionalKorisnik.get();
-            PrikazKorisnikaDrugimaDTO prikazKorisnika = new PrikazKorisnikaDrugimaDTO();
-            prikazKorisnika.setSlika(dobijeniKorisnik.getSlika());
+        Korisnik korisnik = korisnikRepo.findByKorisnickoIme(imeKorisnika)
+                .orElseThrow(() -> new EntityNotFoundException("Korisnik nije pronadjen sa imenom: " + imeKorisnika));
 
-            prikazKorisnika.setKorisnickoIme(dobijeniKorisnik.getKorisnickoIme());
-            prikazKorisnika.setDatumKreiranja(dobijeniKorisnik.getDatumKreiranja());
 
-            return prikazKorisnika;
-        } else {
-            throw new EntityNotFoundException("Korisnik nije pronađen");
-        }
+        PrikazKorisnikaDrugimaDTO prikazKorisnika = new PrikazKorisnikaDrugimaDTO();
+        prikazKorisnika.setSlika(korisnik.getSlika());
+        prikazKorisnika.setKorisnickoIme(korisnik.getKorisnickoIme());
+        prikazKorisnika.setDatumKreiranja(korisnik.getDatumKreiranja());
+
+        return prikazKorisnika;
     }
 
 

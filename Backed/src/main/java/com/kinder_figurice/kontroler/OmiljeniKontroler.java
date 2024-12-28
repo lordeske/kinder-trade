@@ -62,7 +62,7 @@ public class OmiljeniKontroler {
     public ResponseEntity<Void> obrisiFiguricuIzOmiljeno(
             @PathVariable Long id
     ) {
-        Boolean jelObrisana = omiljeniServis.obrisiOmiljenu(id);
+        boolean jelObrisana = omiljeniServis.obrisiOmiljenu(id);
 
         if(jelObrisana)
         {
