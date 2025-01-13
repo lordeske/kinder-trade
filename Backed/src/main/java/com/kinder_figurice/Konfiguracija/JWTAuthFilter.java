@@ -34,7 +34,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {
 
         String token = getJWTfromToken(request);
 
-        if (token != null && jwtGenerator.validisiToken(token)) {
+        if (token != null && jwtGenerator.validisiAccessToken(token)) {
             String korisnickoIme = jwtGenerator.dobijKorisnickoImeIzJWT(token);
 
             UserDetails userDetails = customUserDetailSerice.loadUserByUsername(korisnickoIme);

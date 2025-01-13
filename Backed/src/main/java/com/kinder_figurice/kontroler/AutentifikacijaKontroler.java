@@ -38,9 +38,9 @@ public class AutentifikacijaKontroler {
 
         try {
 
-            korisnikServis.loginKorisnika(loginDTO);
+            AuthResponseDTO authResponseDTO =  korisnikServis.loginKorisnika(loginDTO);
 
-            return new ResponseEntity<>(new AuthResponseDTO(korisnikServis.loginKorisnika(loginDTO)), HttpStatus.CREATED);
+            return new ResponseEntity<>(authResponseDTO ,HttpStatus.OK);
 
         }
         catch (EntityNotFoundException e)

@@ -35,40 +35,30 @@ public class KorisnikKontroler {
 
     @PutMapping("/azuriraj/{korisnickoIme}")
     public ResponseEntity<Korisnik> azurirajKorisnika(@PathVariable String korisnickoIme, @RequestBody AzurirajKorisnikaDTO azuriraniKorisnik) {
-        try {
+
             Korisnik izmenjenKorisnik = korisnikServis.azurirajKorisnika(korisnickoIme, azuriraniKorisnik);
             return new ResponseEntity<>(izmenjenKorisnik, HttpStatus.OK);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+
     }
 
 
 
     @PostMapping
     public ResponseEntity<Korisnik> kreirajKorisnika(@RequestBody RegistracijaDTO korisnik) {
-        try {
+
             Korisnik noviKorisnik = korisnikServis.kreirajKorisnika(korisnik);
             return new ResponseEntity<>(noviKorisnik, HttpStatus.CREATED);
-        } catch (EmailConflictException e) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
+
     }
 
 
 
     @DeleteMapping("/obrisi/{korisnickoIme}")
     public ResponseEntity<String> obrisiKorisnika(@PathVariable String korisnickoIme) {
-        try {
+
             korisnikServis.obrisiKorisnika(korisnickoIme);
             return ResponseEntity.ok("Korisnik sa imenom " + korisnickoIme + " je uspesno obrisan.");
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (SecurityException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Doslo je do greske.");
-        }
+
     }
 
 

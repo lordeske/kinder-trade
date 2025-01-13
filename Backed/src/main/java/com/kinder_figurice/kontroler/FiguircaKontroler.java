@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/api/figurice")
@@ -30,41 +30,27 @@ public class FiguircaKontroler {
 
     @GetMapping("/id/{id}")
     public ResponseEntity<FiguricaPrikaz> getFiguricaById(@PathVariable Long id) {
-        try {
+
             FiguricaPrikaz figuricaPrikaz = figuricaServis.findById(id);
             return ResponseEntity.ok(figuricaPrikaz);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+
     }
 
 
     @PostMapping("/kreiraj")
     public ResponseEntity<FiguricaDTO> kreirajFiguricu(@RequestBody FiguricaDTO figurica) {
-        try {
+
             FiguricaDTO novaFigurica = figuricaServis.kreirajFiguricu(figurica);
             return new ResponseEntity<>(novaFigurica, HttpStatus.CREATED);
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+
     }
 
     @PutMapping("azuriraj/{id}")
     public ResponseEntity<FiguricaDTO> updateFigurica(@PathVariable Long id, @RequestBody FiguricaUpdateDTO azuriranaFigurica) {
-        try {
+
             FiguricaDTO figuricaDTO = figuricaServis.azurirajFiguricu(azuriranaFigurica, id);
             return ResponseEntity.ok(figuricaDTO);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } catch (SecurityException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+
     }
 
 
@@ -85,11 +71,9 @@ public class FiguircaKontroler {
 
     @GetMapping("/profil/{korisnickoIme}")
     public ResponseEntity<List<FiguricaDTO>> korisnickeFiguricePoImenu(@PathVariable String korisnickoIme) {
-        try {
+
             List<FiguricaDTO> figurice = figuricaServis.sveFiguriceKorisnikaPoImenu(korisnickoIme);
             return new ResponseEntity<>(figurice, HttpStatus.OK);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+
     }
 }

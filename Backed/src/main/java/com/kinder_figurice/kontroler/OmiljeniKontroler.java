@@ -2,6 +2,7 @@ package com.kinder_figurice.kontroler;
 
 
 import com.kinder_figurice.dto.FiguricaDTO.FiguricaDTO;
+import com.kinder_figurice.dto.FiguricaDTO.FiguricaPrikaz;
 import com.kinder_figurice.modeli.Figurica;
 import com.kinder_figurice.modeli.Korisnik;
 import com.kinder_figurice.modeli.Omiljeni;
@@ -29,49 +30,34 @@ public class OmiljeniKontroler {
     @Autowired
     private FiguricaServis figuricaServis;
 
-    @GetMapping("/{korisnikId}")
-    public ResponseEntity<List<FiguricaDTO>> listFavoriteFigurice(@PathVariable Long korisnikId) {
-        List<FiguricaDTO> favoriteFigurice = omiljeniServis.getOmiljeniByKorisnikId(korisnikId);
+    @GetMapping()
+    public ResponseEntity<List<FiguricaPrikaz>> listFavoriteFigurice() {
+        List<FiguricaPrikaz> favoriteFigurice = omiljeniServis.getOmiljeniByKorisnikId();
 
-        if (favoriteFigurice.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+
 
         return ResponseEntity.ok(favoriteFigurice);
     }
 
-    @PostMapping("/{korisnikId}/{figuricaId}")
-    public ResponseEntity<Omiljeni> dodajFiguricuUOmiljeno(
-            @PathVariable Long korisnikId,
+    @PostMapping("/{figuricaId}")
+    public ResponseEntity<String> dodajFiguricuUOmiljeno(
+
             @PathVariable Long figuricaId
     ) {
 
-        try {
-            Omiljeni omiljeni = omiljeniServis.dodajFiguricuUOmiljeni(korisnikId, figuricaId);
-            return new ResponseEntity<>(omiljeni, HttpStatus.CREATED);
-        } catch (IllegalStateException e) {
-            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+
+            omiljeniServis.dodajFiguricuUOmiljeni(figuricaId);
+            return new ResponseEntity<>("Figurica je uspjesno dodata u omiljene", HttpStatus.CREATED);
+
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> obrisiFiguricuIzOmiljeno(
-            @PathVariable Long id
+    @DeleteMapping("/{idFigurice}")
+    public ResponseEntity<String> obrisiFiguricuIzOmiljeno(
+            @PathVariable Long idFigurice
     ) {
-        boolean jelObrisana = omiljeniServis.obrisiOmiljenu(id);
+        omiljeniServis.obrisiOmiljenu(idFigurice);
+        return new ResponseEntity<>("Figurica izbrisana iz omiljenih", HttpStatus.OK);
 
-        if(jelObrisana)
-        {
-            return ResponseEntity.noContent().build();
-        }
-        else
-        {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
     }
 
 

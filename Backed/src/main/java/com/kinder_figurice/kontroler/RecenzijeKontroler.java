@@ -2,12 +2,15 @@ package com.kinder_figurice.kontroler;
 
 
 import com.kinder_figurice.dto.RecenzijeDTO.RecenzijaDTO;
-import com.kinder_figurice.dto.RecenzijeDTO.RecenzijaRequest;
+import com.kinder_figurice.dto.RecenzijeDTO.RecenzijaKreiranjeDTO;
+
 import com.kinder_figurice.modeli.Recenzije;
 import com.kinder_figurice.servisi.RecenzijeServis;
-import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page; // ISPRAVAN IMPORT
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,38 +27,36 @@ public class RecenzijeKontroler {
 
 
 
+
+
     @PostMapping
-    public ResponseEntity<Recenzije> kreirajRecenziju(@RequestBody RecenzijaRequest recenzijaRequest)
+    public ResponseEntity<RecenzijaDTO> kreirajRecenziju(@RequestBody RecenzijaKreiranjeDTO recenzijaKreiranjeDTO)
     {
 
-        try
-        {
-            Recenzije recenzije =  recenzijeServis.kreirajRecenziju(recenzijaRequest);
-            return new  ResponseEntity<>(recenzije, HttpStatus.CREATED);
-        }
-        catch (EntityNotFoundException e)
-        {
+        RecenzijaDTO kreiranaRecenzija = recenzijeServis.kreirajRecenziju(recenzijaKreiranjeDTO);
+        return new ResponseEntity<>(kreiranaRecenzija, HttpStatus.CREATED);
 
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        }
 
     }
 
-    @GetMapping("/{idRecenziranog}")
-    public ResponseEntity<List<RecenzijaDTO>> sveRecenzijeKorisnika(
-            @PathVariable Long idRecenziranog
-    )
-    {
 
-        try {
 
-            List<RecenzijaDTO> listaRecenzija = recenzijeServis.sveRecenzijeKorisnika(idRecenziranog);
-            return new ResponseEntity<>(listaRecenzija, HttpStatus.OK);
+    /// GET /api/recenzije/jovan123?page=1&size=5
+    @GetMapping("/{korisnickoIme}")
+    public ResponseEntity<Page<RecenzijaDTO>> prikaziRecenzijeKorisnika(
+            @PathVariable String korisnickoIme,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
 
-        }
-        catch (EntityNotFoundException e) {
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Pageable pageable = PageRequest.of(page, size);
+
+
+        Page<RecenzijaDTO> recenzijePage = recenzijeServis.prikaziRecenzijeKorisnika(korisnickoIme, pageable);
+
+
+        return ResponseEntity.ok(recenzijePage);
     }
 
 
@@ -65,23 +66,22 @@ public class RecenzijeKontroler {
 
 
 
-    }
 
 
 
 
     @GetMapping("/sve")
     public ResponseEntity<List<Recenzije>> sveRecenzije() {
-        List<Recenzije> listaRecenzija = recenzijeServis.sveRecenzije();
-        return new ResponseEntity<>(listaRecenzija, HttpStatus.OK);
+
+        return new ResponseEntity<>(recenzijeServis.sveRecenzije(), HttpStatus.OK);
     }
 
 
     @DeleteMapping("/obrisi/{id}")
-    public ResponseEntity<Void> obrisiRecenziju(@PathVariable Long id) {
+    public ResponseEntity<String> obrisiRecenziju(@PathVariable Long id) {
         try {
             recenzijeServis.obrisiRecenziju(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>("Recenzija obrisana", HttpStatus.NO_CONTENT);
         } catch (EmptyResultDataAccessException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

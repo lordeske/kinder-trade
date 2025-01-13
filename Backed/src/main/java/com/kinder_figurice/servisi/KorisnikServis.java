@@ -2,6 +2,7 @@ package com.kinder_figurice.servisi;
 
 
 import com.kinder_figurice.Konfiguracija.JWTGenerator;
+import com.kinder_figurice.dto.AuthResponseDTO.AuthResponseDTO;
 import com.kinder_figurice.dto.KorisnikDTO.AzurirajKorisnikaDTO;
 import com.kinder_figurice.dto.KorisnikDTO.LoginDTO;
 import com.kinder_figurice.dto.KorisnikDTO.PrikazKorisnikaDrugimaDTO;
@@ -13,6 +14,7 @@ import com.kinder_figurice.modeli.Role;
 import com.kinder_figurice.repo.KorisnikRepo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,9 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class KorisnikServis {
@@ -130,7 +130,7 @@ public class KorisnikServis {
     }
 
 
-    public String loginKorisnika(LoginDTO loginDTO) {
+    public AuthResponseDTO loginKorisnika(LoginDTO loginDTO) {
 
         if (loginDTO.getKorisnickoIme() == null || loginDTO.getKorisnickoIme().isEmpty()) {
             throw new IllegalArgumentException("Korisničko ime ne sme biti prazno!");
@@ -149,7 +149,15 @@ public class KorisnikServis {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
 
-            return jwtGenerator.generisiToken(authentication);
+            String accessToken = jwtGenerator.generisiToken(authentication);
+            String refreshToken = jwtGenerator.generisiRefreshToken(authentication);
+
+
+            AuthResponseDTO authResponse = new AuthResponseDTO(accessToken, refreshToken);
+            return authResponse;
+
+
+
         } catch (BadCredentialsException e) {
             throw new IllegalArgumentException("Pogrešno korisničko ime ili lozinka");
         }

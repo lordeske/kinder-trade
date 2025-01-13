@@ -34,7 +34,20 @@ public class Recenzije {
 
     private String komentar;
 
+
+
     private LocalDateTime datumKreiranja;
+
+
+
+    @PrePersist
+    public void  onCreate()
+    {
+        this.datumKreiranja = LocalDateTime.now();
+
+    }
+
+
 
 
 }

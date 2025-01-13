@@ -14,7 +14,9 @@ import java.util.Optional;
 public interface OmiljeniRepo extends JpaRepository<Omiljeni, Long> {
 
     List<Omiljeni> findByKorisnikId(Long idKorisnika);
-    Optional<Omiljeni> findByKorisnikIdAndFiguricaId(Long korisnikId, Long figuricaId);
+
+    List<Omiljeni> findByKorisnik(Korisnik korisnik);
+    Optional<Omiljeni> findByKorisnikAndFiguricaId(Korisnik korisnik, Long figuricaId);
 
 
 

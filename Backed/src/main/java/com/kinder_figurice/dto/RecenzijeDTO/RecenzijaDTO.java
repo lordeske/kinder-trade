@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 public class RecenzijaDTO {
 
-
+    private Long idRecenzije;
     private String imeRecenzenta;
     private Integer ocena;
     private String komentar;
