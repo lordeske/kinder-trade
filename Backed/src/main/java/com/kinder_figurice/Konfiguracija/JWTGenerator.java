@@ -21,6 +21,11 @@ public class JWTGenerator {
         return generisiJWT(korisnickoIme, JWT_ISTEK);
     }
 
+    public String generisiToken(String korisnickoIme) {
+        return generisiJWT(korisnickoIme, SekjuritiKonstante.JWT_ISTEK);
+    }
+
+
 
     public String generisiRefreshToken(Authentication authentication) {
         String korisnickoIme = authentication.getName();

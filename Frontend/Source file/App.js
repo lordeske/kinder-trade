@@ -7,6 +7,7 @@ import ProfilKorisnika from './komponente/ProfilKorisnika';
 import './App.css';
 import Pocetna from './komponente/Pocetna';
 import Figurica from './komponente/Figurica';
+import LoginStrana from './komponente/LoginStrana';
 
 
 
@@ -14,17 +15,29 @@ import Figurica from './komponente/Figurica';
 function App() {
   return (
     <Router>
-      <div className="app-container">
-      <Navbar />
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/pocetna" element={<Pocetna />} />
-          <Route path="/profil/:korisnickoIme" element={<ProfilKorisnika />} />
-          <Route path="/figurica/:idFigurice" element={<Figurica />} />
-          <Route path="*" element={<Navigate to="/login" />} />
-        </Routes>
-      </div>
-    </Router>
+  <Routes>
+   
+    <Route path="/login" element={<Login />} />
+    <Route path="/loginStrana" element={<LoginStrana />} />
+
+    
+    <Route
+      path="/*"
+      element={
+        <div className="app-container">
+          <Navbar />
+          <Routes>
+            <Route path="/pocetna" element={<Pocetna />} />
+            <Route path="/profil/:korisnickoIme" element={<ProfilKorisnika />} />
+            <Route path="/figurica/:idFigurice" element={<Figurica />} />
+            <Route path="*" element={<Navigate to="/login" />} />
+          </Routes>
+        </div>
+      }
+    />
+  </Routes>
+</Router>
+
   );
 }
 

@@ -1,6 +1,7 @@
 package com.kinder_figurice.kontroler;
 
 
+import com.kinder_figurice.Konfiguracija.JWTGenerator;
 import com.kinder_figurice.dto.AuthResponseDTO.AuthResponseDTO;
 import com.kinder_figurice.dto.KorisnikDTO.LoginDTO;
 import com.kinder_figurice.dto.KorisnikDTO.RegistracijaDTO;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("api/autentifikacija")
 public class AutentifikacijaKontroler {
@@ -28,6 +31,9 @@ public class AutentifikacijaKontroler {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JWTGenerator jwtGenerator;
 
 
 
@@ -77,6 +83,55 @@ public class AutentifikacijaKontroler {
 
 
     }
+
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponseDTO> osvjeziToken(
+            @RequestBody Map<String, String> zahtjev
+            )
+    {
+
+        String refreshToken = zahtjev.get("refreshToken");
+
+        if(jwtGenerator.validisiRefreshToken(refreshToken))
+        {
+
+            String korisnickoIme = jwtGenerator.dobijKorisnickoImeIzJWT(refreshToken);
+
+
+            String noviAccessToken = jwtGenerator.generisiToken(korisnickoIme);
+
+            AuthResponseDTO response = new AuthResponseDTO(noviAccessToken, refreshToken);
+            return ResponseEntity.ok(response);
+
+
+
+        }
+        else {
+             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
+
+
+    }
+
+
+
+    /// Na frontu ovo treba da se izvrsi tako sto cu obrisati iz LocalStoragea
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout() {
+        return ResponseEntity.ok("Uspesno ste se odjavili.");
+    }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

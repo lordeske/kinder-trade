@@ -153,8 +153,7 @@ public class KorisnikServis {
             String refreshToken = jwtGenerator.generisiRefreshToken(authentication);
 
 
-            AuthResponseDTO authResponse = new AuthResponseDTO(accessToken, refreshToken);
-            return authResponse;
+            return new AuthResponseDTO(accessToken, refreshToken);
 
 
 

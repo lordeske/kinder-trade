@@ -1,7 +1,7 @@
 import { useState } from "react";
 import React from "react";
 import { useNavigate } from 'react-router-dom';
-import { registracija } from "../api calls/auth";
+import { login } from "../api calls/auth";
 import '../css folder/Login.css';
 
 
@@ -9,16 +9,14 @@ import '../css folder/Login.css';
 
 
 
-const Login = () => {
+const LoginStrana = () => {
     const [korisnickoIme, setKorisnickoIme] = useState("");
-    const [email, setEmail] = useState("");
     const [lozinka, setLozinka] = useState("");
     const [poruka, setPoruka] = useState("");
     const [greska, setGreska] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+    
 
     const navigacija = useNavigate();
 
@@ -31,44 +29,32 @@ const Login = () => {
 
     }
 
-    const kreirajProfil = async (e) => {
+    const loginProfil = async (e) => {
         e.preventDefault();
 
         setGreska("");
         setPoruka("");
         setLoading(true);
 
-        if (!emailRegex.test(email)) {
-            setGreska("Unesite validan email.");
-            setLoading(false);
-            return;
-        }
-
-
-        if (!passwordRegex.test(lozinka)) {
-            setGreska("Lozinka mora imati najmanje 6 karaktera, jedno veliko slovo, broj i specijalni karakter.");
-            setLoading(false);
-            return;
-        }
+       
 
 
         const korisnik = {
             korisnickoIme,
-            email,
-            lozinka,
+            lozinka
         };
 
         try {
-            await registracija(korisnik);
+            await login(korisnik);
             setKorisnickoIme("");
             setLozinka("");
-            setEmail("");
-            setPoruka("Profil uspešno kreiran!");
-            navigacija("/loginStrana")
+            setPoruka("Uspesno logovan");
+            
+            navigacija("/pocetna")
 
         } catch (error) {
-            console.error("Greška prilikom kreiranja korisnika:", error);
-            setGreska("Greška prilikom kreiranja profila. Pokušajte ponovo.");
+            console.error("Greška prilikom logovanja korisnika:", error);
+            setGreska("Greška prilikom logovanja profila. Pokušajte ponovo.");
         } finally {
             setLoading(false);
         }
@@ -80,8 +66,8 @@ const Login = () => {
         <div className="login-box">
           <div className="circle circle-one"></div>
           <div className="form-box">
-            <h1 className="title">Kreiraj profil</h1>
-            <form onSubmit={kreirajProfil}>
+            <h1 className="title">Login</h1>
+            <form onSubmit={loginProfil}>
               <input
                 type="text"
                 placeholder="Vaše korisničko ime:"
@@ -90,14 +76,7 @@ const Login = () => {
                 onChange={handleInputCiscenje(setKorisnickoIme)}
                 required
               />
-              <input
-                type="email"
-                placeholder="Email:"
-                id="email"
-                value={email}
-                onChange={handleInputCiscenje(setEmail)}
-                required
-              />
+              
               <input
                 type="password"
                 placeholder="Lozinka:"
@@ -107,7 +86,7 @@ const Login = () => {
                 required
               />
               <button className="submit-btn" type="submit" disabled={loading}>
-                {loading ? "Kreiranje..." : "Kreiraj profil"}
+                {loading ? "Login..." : "Loginovanje na profil"}
               </button>
             </form>
             {loading && <div className="spinner"></div>}
@@ -123,4 +102,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default LoginStrana;

@@ -11,15 +11,6 @@ const api = axios.create({
 });
 
 
-export async function kreirajKorisnikaV1(korisnik) {
-  try {
-    const response = await api.post("", korisnik);
-    return response.data;
-  } catch (error) {
-    console.error("Greška prilikom kreiranja korisnika:", error);
-    throw error;
-  }
-}
 
 
 export async function sviKorisnici() {
