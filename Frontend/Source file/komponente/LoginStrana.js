@@ -88,6 +88,7 @@ const LoginStrana = () => {
               <button className="submit-btn" type="submit" disabled={loading}>
                 {loading ? "Login..." : "Loginovanje na profil"}
               </button>
+              <a  onClick={ () => navigacija("/login")}>Registruj se</a>
             </form>
             {loading && <div className="spinner"></div>}
             {!loading && poruka && <p className="message-success">{poruka}</p>}

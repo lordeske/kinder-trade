@@ -8,6 +8,9 @@ import './App.css';
 import Pocetna from './komponente/Pocetna';
 import Figurica from './komponente/Figurica';
 import LoginStrana from './komponente/LoginStrana';
+import MojProfil from './komponente/MojProfil';
+import KreirajFiguricu from './komponente/KreirajFiguricu';
+import AzurirajProfil from './komponente/AzurirajProfil';
 
 
 
@@ -30,7 +33,11 @@ function App() {
             <Route path="/pocetna" element={<Pocetna />} />
             <Route path="/profil/:korisnickoIme" element={<ProfilKorisnika />} />
             <Route path="/figurica/:idFigurice" element={<Figurica />} />
+            <Route path="/moj-profil" element={<MojProfil />} />
+            <Route path="/kreiraj-figuricu" element={<KreirajFiguricu />} />
+            <Route path="/azuriraj-profil" element={<AzurirajProfil />} />
             <Route path="*" element={<Navigate to="/login" />} />
+
           </Routes>
         </div>
       }

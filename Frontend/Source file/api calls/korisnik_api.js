@@ -24,23 +24,28 @@ export async function sviKorisnici() {
 }
 
 
-export async function nadjiKorisnika(idKorisnika) {
-  try {
-    const response = await api.get(`/${idKorisnika}`);
-    return response.data;
-  } catch (error) {
-    console.error("Greška prilikom prikaza korisnika:", error);
-    throw error;
-  }
-}
 
 
-export async function azurirajKorisnika(idKorisnika, azuriraniInfoKorisnika) {
+export async function azurirajKorisnika(azuriraniInfoKorisnika) {
   try {
-    const response = await api.patch(`/${idKorisnika}`, azuriraniInfoKorisnika);
-    return response.data;
+    const token = localStorage.getItem("refreshToken"); 
+
+    if (!token) {
+      throw new Error("Nema validnog tokena. Korisnik nije prijavljen.");
+    }
+
+    console.log(azuriraniInfoKorisnika)
+
+    const response = await api.patch(`/azuriraj`, azuriraniInfoKorisnika, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log("Korisnik uspešno ažuriran:", response.data);
+    return response.data; 
   } catch (error) {
-    console.error("Greška prilikom ažuriranja korisnika:", idKorisnika, "podaci:", azuriraniInfoKorisnika);
+    console.error("Greška prilikom ažuriranja korisnika:", error.message);
     throw error;
   }
 }
@@ -81,3 +86,22 @@ export async function getPredlozeniKorisnici(korisnickoIme) {
 
 
 
+export async function dohvatiMojProfil () {
+  try {
+    const token = localStorage.getItem("refreshToken")
+    console.log('Šaljem zahtev sa tokenom:', token);
+
+    const response = await axios.get('http://localhost:8080/api/korisnici/loginprofile/me', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    
+    console.log('Uspešan odgovor:', response.data);
+    return response.data
+  } catch (error) {
+    console.error('Greška:', error.response ? error.response.data : error.message);
+  }
+};
+
+dohvatiMojProfil();

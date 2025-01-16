@@ -109,6 +109,9 @@ const Login = () => {
               <button className="submit-btn" type="submit" disabled={loading}>
                 {loading ? "Kreiranje..." : "Kreiraj profil"}
               </button>
+              
+              <a  onClick={ () => navigacija("/loginStrana")}>Imas nalog? Loguj se!</a>
+             
             </form>
             {loading && <div className="spinner"></div>}
             {!loading && poruka && <p className="message-success">{poruka}</p>}
