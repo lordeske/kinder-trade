@@ -33,10 +33,10 @@ public class KorisnikKontroler {
     }
 
 
-    @PutMapping("/azuriraj/{korisnickoIme}")
-    public ResponseEntity<Korisnik> azurirajKorisnika(@PathVariable String korisnickoIme, @RequestBody AzurirajKorisnikaDTO azuriraniKorisnik) {
+    @PutMapping("/azuriraj")
+    public ResponseEntity<Korisnik> azurirajKorisnika(@RequestBody AzurirajKorisnikaDTO azuriraniKorisnik) {
 
-            Korisnik izmenjenKorisnik = korisnikServis.azurirajKorisnika(korisnickoIme, azuriraniKorisnik);
+            Korisnik izmenjenKorisnik = korisnikServis.azurirajKorisnika(azuriraniKorisnik);
             return new ResponseEntity<>(izmenjenKorisnik, HttpStatus.OK);
 
     }
@@ -70,6 +70,17 @@ public class KorisnikKontroler {
 
         return korisnikServis.prikaziPredlozeneKorisnike(trenutniKorisnik);
     }
+
+
+    @GetMapping("/loginprofile/me")
+    public ResponseEntity<Korisnik> prikaziMojProfil() {
+
+
+        return ResponseEntity.ok(korisnikServis.prikaziMojProfil());
+
+
+    }
+
 
 
 

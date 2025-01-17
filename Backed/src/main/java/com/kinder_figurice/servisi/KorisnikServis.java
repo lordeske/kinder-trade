@@ -93,15 +93,15 @@ public class KorisnikServis {
 
 
 
-    public Korisnik azurirajKorisnika(String korisnickoIme, AzurirajKorisnikaDTO azuriraniKorisnik) {
+    public Korisnik azurirajKorisnika(AzurirajKorisnikaDTO azuriraniKorisnik) {
 
         String korisnickoImeIzTokena = SecurityContextHolder.getContext().getAuthentication().getName();
 
 
-        Optional<Korisnik> postojeciKorisnik = korisnikRepo.findByKorisnickoIme(korisnickoIme);
+        Optional<Korisnik> postojeciKorisnik = korisnikRepo.findByKorisnickoIme(korisnickoImeIzTokena);
         if(postojeciKorisnik.isEmpty())
         {
-            throw new RuntimeException("Korisnik nije pronadjen sa imenom "+ korisnickoIme);
+            throw new RuntimeException("Korisnik nije pronadjen sa imenom "+ korisnickoImeIzTokena);
         }
 
         Korisnik korisnikZaCuvanje = postojeciKorisnik.get();
@@ -233,6 +233,21 @@ public class KorisnikServis {
 
         return predlozeniKorisnici;
     }
+
+
+
+    public Korisnik prikaziMojProfil() {
+
+        String korisnickoImeIzTokena = SecurityContextHolder.getContext().getAuthentication().getName();
+
+
+        return korisnikRepo.findByKorisnickoIme(korisnickoImeIzTokena).orElseThrow(
+                () -> new EntityNotFoundException("Korisnik nije pronadjen")
+        );
+
+
+    }
+
 
 
 

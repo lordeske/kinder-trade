@@ -7,6 +7,10 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const azurirajKorisnikaLoading = (noviKorisnik) => {
+    setUser(noviKorisnik);
+};
+
   useEffect(() => {
     const fetchUserProfile = async () => {
       const token = localStorage.getItem('accessToken'); 
@@ -26,7 +30,7 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser, loading }}>
+    <UserContext.Provider value={{ user, setUser, loading, azurirajKorisnikaLoading }}>
       {children}
     </UserContext.Provider>
   );

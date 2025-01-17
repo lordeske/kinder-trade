@@ -29,14 +29,13 @@ export async function sviKorisnici() {
 export async function azurirajKorisnika(azuriraniInfoKorisnika) {
   try {
     const token = localStorage.getItem("refreshToken"); 
-
     if (!token) {
       throw new Error("Nema validnog tokena. Korisnik nije prijavljen.");
     }
 
-    console.log(azuriraniInfoKorisnika)
+    console.log("Šaljem zahtev sa payload-om:", azuriraniInfoKorisnika);
 
-    const response = await api.patch(`/azuriraj`, azuriraniInfoKorisnika, {
+    const response = await api.put(`/azuriraj`, azuriraniInfoKorisnika, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -49,6 +48,7 @@ export async function azurirajKorisnika(azuriraniInfoKorisnika) {
     throw error;
   }
 }
+
 
 
 export async function obrisiKorisnika(idKorisnika) {
