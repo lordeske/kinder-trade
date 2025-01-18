@@ -30,9 +30,9 @@ public class OmiljeniKontroler {
     @Autowired
     private FiguricaServis figuricaServis;
 
-    @GetMapping()
-    public ResponseEntity<List<FiguricaPrikaz>> listFavoriteFigurice() {
-        List<FiguricaPrikaz> favoriteFigurice = omiljeniServis.getOmiljeniByKorisnikId();
+    @GetMapping("/moje-omiljene")
+    public ResponseEntity<List<FiguricaPrikaz>> getMojeOmiljeneFigurice() {
+        List<FiguricaPrikaz> favoriteFigurice = omiljeniServis.getMojeOmiljene();
 
 
 
@@ -60,6 +60,13 @@ public class OmiljeniKontroler {
 
     }
 
+
+
+    @GetMapping("/omiljeno/{figuricaId}")
+    public ResponseEntity<Boolean> daLiJeFiguricaUOmiljenima(@PathVariable Long figuricaId) {
+        boolean uOmiljenima = omiljeniServis.daLiJeFiguricaUOmiljenim(figuricaId);
+        return ResponseEntity.ok(uOmiljenima);
+    }
 
 
 

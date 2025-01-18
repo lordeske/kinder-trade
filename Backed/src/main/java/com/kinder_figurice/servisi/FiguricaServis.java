@@ -1,10 +1,7 @@
 package com.kinder_figurice.servisi;
 
 
-import com.kinder_figurice.dto.FiguricaDTO.FiguricaDTO;
-import com.kinder_figurice.dto.FiguricaDTO.FiguricaPocetna;
-import com.kinder_figurice.dto.FiguricaDTO.FiguricaPrikaz;
-import com.kinder_figurice.dto.FiguricaDTO.FiguricaUpdateDTO;
+import com.kinder_figurice.dto.FiguricaDTO.*;
 import com.kinder_figurice.modeli.Figurica;
 import com.kinder_figurice.modeli.Korisnik;
 import com.kinder_figurice.repo.FiguricaRepo;
@@ -63,6 +60,10 @@ public class FiguricaServis {
 
 
     public List<FiguricaPocetna> dohvatiRandomFigurice(int limit) {
+
+
+
+
 
         if (limit <= 0) {
             throw new IllegalArgumentException("Limit mora biti veci od 0");
@@ -148,15 +149,34 @@ public class FiguricaServis {
 
 
 
-    public List<FiguricaDTO> sveFiguriceKorisnikaPoImenu(String imeKorisnika)
+    public List<FiguricaIDPrikaz> sveFiguriceKorisnikaPoImenu(String imeKorisnika)
     {
 
         List<Figurica> nizFigurica = figuricaRepo.findByKorisnik_KorisnickoIme(imeKorisnika);
 
         if (nizFigurica != null) {
-            return  mapirajObjekatFiguriceUDTO(nizFigurica);
+            return  mapirajObjekatFiguriceUPrikazID(nizFigurica);
         } else {
             throw new EntityNotFoundException("Desila se greska sa pretragom za korisnika" + imeKorisnika);
+        }
+
+
+
+
+    }
+
+
+    public List<Figurica> mojeFigurice()
+    {
+        String korisicnkoImeIzTokena = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        List<Figurica> nizFigurica = figuricaRepo.findByKorisnik_KorisnickoIme(korisicnkoImeIzTokena);
+
+        try{
+
+            return  nizFigurica;
+        } catch (Exception e){
+            throw new EntityNotFoundException("Desila se greska sa pretragom za korisnika" + korisicnkoImeIzTokena);
         }
 
 
@@ -181,6 +201,26 @@ public class FiguricaServis {
             figuricaDTO.setStanje(figurica.getStanje());
 
             potrebnaLista.add(figuricaDTO);
+        }
+
+        return potrebnaLista;
+    }
+
+
+    public List<FiguricaIDPrikaz> mapirajObjekatFiguriceUPrikazID(List<Figurica> dataLista) {
+        List<FiguricaIDPrikaz> potrebnaLista = new ArrayList<>();
+
+        for (Figurica figurica : dataLista) {
+            FiguricaIDPrikaz figuricaIDPrikaz = new FiguricaIDPrikaz();
+            figuricaIDPrikaz.setNaslov(figurica.getNaslov());
+            figuricaIDPrikaz.setIdFigurice(figurica.getId());
+
+            figuricaIDPrikaz.setCena(figurica.getCena());
+
+            figuricaIDPrikaz.setSlikaUrl(figurica.getSlikaUrl());
+
+
+            potrebnaLista.add(figuricaIDPrikaz);
         }
 
         return potrebnaLista;

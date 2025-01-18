@@ -18,6 +18,7 @@ public interface OmiljeniRepo extends JpaRepository<Omiljeni, Long> {
     List<Omiljeni> findByKorisnik(Korisnik korisnik);
     Optional<Omiljeni> findByKorisnikAndFiguricaId(Korisnik korisnik, Long figuricaId);
 
+    boolean existsByKorisnikAndFigurica(Korisnik korisnik, Figurica figurica);
 
 
 }

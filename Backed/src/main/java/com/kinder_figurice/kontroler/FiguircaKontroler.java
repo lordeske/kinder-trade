@@ -1,9 +1,6 @@
 package com.kinder_figurice.kontroler;
 
-import com.kinder_figurice.dto.FiguricaDTO.FiguricaDTO;
-import com.kinder_figurice.dto.FiguricaDTO.FiguricaPocetna;
-import com.kinder_figurice.dto.FiguricaDTO.FiguricaPrikaz;
-import com.kinder_figurice.dto.FiguricaDTO.FiguricaUpdateDTO;
+import com.kinder_figurice.dto.FiguricaDTO.*;
 import com.kinder_figurice.modeli.Figurica;
 import com.kinder_figurice.servisi.FiguricaServis;
 import jakarta.persistence.EntityNotFoundException;
@@ -70,10 +67,18 @@ public class FiguircaKontroler {
     }
 
     @GetMapping("/profil/{korisnickoIme}")
-    public ResponseEntity<List<FiguricaDTO>> korisnickeFiguricePoImenu(@PathVariable String korisnickoIme) {
+    public ResponseEntity<List<FiguricaIDPrikaz>> korisnickeFiguricePoImenu(@PathVariable String korisnickoIme) {
 
-            List<FiguricaDTO> figurice = figuricaServis.sveFiguriceKorisnikaPoImenu(korisnickoIme);
+            List<FiguricaIDPrikaz> figurice = figuricaServis.sveFiguriceKorisnikaPoImenu(korisnickoIme);
             return new ResponseEntity<>(figurice, HttpStatus.OK);
+
+    }
+
+    @GetMapping("/moje-figurice")
+    public ResponseEntity<List<Figurica>> korisnickeFiguricePoImenu() {
+
+        List<Figurica> figurice = figuricaServis.mojeFigurice();
+        return new ResponseEntity<>(figurice, HttpStatus.OK);
 
     }
 }

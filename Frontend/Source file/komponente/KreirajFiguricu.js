@@ -41,7 +41,7 @@ const KreirajFiguricu = () => {
       await kreirajFiguricu(figuricaData);
       
       setPoruka('Figurica uspešno kreirana!');
-      navigacija('/moj-profil');
+      navigacija('/moje-figurice');
     } catch (error) {
       console.error('Greška prilikom kreiranja figurice:', error);
       setGreska('Desila se greška. Pokušajte ponovo.');

@@ -1,13 +1,23 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { UserContext } from './KorisnikContext'; 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../css folder/Navbar.css';
+import { logout } from '../api calls/auth';
 
 const Navbar = () => {
   const { user, loading } = useContext(UserContext);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const navigate = useNavigate();
 
-  console.log('Loading:', loading);
-  console.log('User:', user);
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev);
+  };
+
+  const handleLogout = async () => {
+  
+    await logout();
+    window.location.href = '/login';
+  };
 
   return (
     <nav className="navbar">
@@ -18,11 +28,24 @@ const Navbar = () => {
         <li><Link to="/pocetna">Početna</Link></li>
         {!loading && user ? (
           <>
-            <li><Link to="/moj-profil">{user.korisnickoIme}</Link></li>
-            <li><button onClick={() => {
-              localStorage.removeItem('accessToken');
-              window.location.href = '/login';
-            }}>Odjavi se</button></li>
+            
+            <li><Link to="/moje-figurice">Figurice</Link></li>
+            <li><Link to="/moje-omiljene">Omiljene</Link></li>
+            <li className="navbar-user-dropdown">
+              <button onClick={toggleDropdown} className="user-button">
+                {user.korisnickoIme} ▼
+              </button>
+              {isDropdownOpen && (
+                <ul className="dropdown-menu">
+                  <li>
+                    <button onClick={() => navigate('/moj-profil')}>Pogledaj profil</button>
+                  </li>
+                  <li>
+                    <button onClick={handleLogout}>Odjavi se</button>
+                  </li>
+                </ul>
+              )}
+            </li>
           </>
         ) : (
           <>

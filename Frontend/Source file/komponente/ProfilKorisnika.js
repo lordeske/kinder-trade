@@ -64,6 +64,14 @@ const ProfilKorisnika = () => {
     }
 
 
+    const pogledajFiguricu = (id) => {
+        if (id) {
+            navigacija(`/figurica/${id}`);
+        } else {
+            console.log("ID figurice nije dostupan.");
+        }
+    };
+
     const dobijPredlozeneKorisnike = async () => {
 
         try {
@@ -159,8 +167,12 @@ const ProfilKorisnika = () => {
                 ) : (
                     <>
                         {figurice.length > 0 ? (
-                            figurice.map((figurica, index) => (
-                                <div key={index} className="post-box">
+                            figurice.map((figurica) => (
+                                <div
+                                    key={figurica.idFigurice}
+                                    className="post-box"
+                                    onClick={() => pogledajFiguricu(figurica.idFigurice)}
+                                >
                                     <img
                                         src={`/publicslike/${figurica.naslov}.jpg`}
                                         alt={figurica.naslov || "Figurica"}
@@ -177,6 +189,7 @@ const ProfilKorisnika = () => {
                     </>
                 )}
             </div>
+
 
             {/* predlozeni profili */}
             <div className="suggested-profiles">

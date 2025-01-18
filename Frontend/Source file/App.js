@@ -11,6 +11,8 @@ import LoginStrana from './komponente/LoginStrana';
 import MojProfil from './komponente/MojProfil';
 import KreirajFiguricu from './komponente/KreirajFiguricu';
 import AzurirajProfil from './komponente/AzurirajProfil';
+import MojeFigurice from './komponente/MojeFigurice';
+import MojeOmiljene from './komponente/MojeOmiljene';
 
 
 
@@ -36,6 +38,8 @@ function App() {
             <Route path="/moj-profil" element={<MojProfil />} />
             <Route path="/kreiraj-figuricu" element={<KreirajFiguricu />} />
             <Route path="/azuriraj-profil" element={<AzurirajProfil />} />
+            <Route path="/moje-figurice" element={<MojeFigurice />} />
+            <Route path="/moje-omiljene" element={<MojeOmiljene />} />
             <Route path="*" element={<Navigate to="/login" />} />
 
           </Routes>

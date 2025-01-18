@@ -41,12 +41,7 @@ const MojProfil = () => {
       </div>
 
       <div className="moj-profil-buttons">
-        <button
-          className="profil-btn"
-          onClick={() => navigacija('/kreiraj-figuricu')}
-        >
-          Kreiraj Figuricu
-        </button>
+        
         <button
           className="profil-btn secondary"
           onClick={() => navigacija('/azuriraj-profil')}

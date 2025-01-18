@@ -32,7 +32,7 @@ public class OmiljeniServis {
     @Autowired
     private FiguricaRepo figuricaRepo;
 
-    public List<FiguricaPrikaz> getOmiljeniByKorisnikId()
+    public List<FiguricaPrikaz> getMojeOmiljene()
     {
         String korisisnickoImeizTokena = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -108,6 +108,26 @@ public class OmiljeniServis {
         omiljeniRepo.delete(omiljeni);
 
         System.out.println("Figurica sa ID: " + figuricaID + " uklonjena iz omiljenih korisnika: " + korisisnickoImeizTokena);
+
+    }
+
+
+
+
+    public boolean daLiJeFiguricaUOmiljenim(Long idFigurice)
+    {
+
+        String korisisnickoImeizTokena = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Korisnik korisnik = korisnikRepo.findByKorisnickoIme(korisisnickoImeizTokena)
+                .orElseThrow(() -> new EntityNotFoundException("Korisnik nije pronadjen: " + korisisnickoImeizTokena));
+
+
+        Figurica figurica = figuricaRepo.findById(idFigurice)
+                .orElseThrow(() -> new EntityNotFoundException("Figurica nije pronadjena: " + idFigurice));
+
+        return omiljeniRepo.existsByKorisnikAndFigurica(korisnik,figurica);
+
 
     }
 

@@ -15,7 +15,7 @@ const api = axios.create({
 export async function getFiguricaById(id) {
   try {
     const response = await api.get(`/id/${id}`);
-    console.log(response.data)
+    console.log("DOBIO SI FIGURICU: :", response.data)
     return response.data;
 
   } catch (error) {
@@ -100,7 +100,7 @@ export async function getFiguriceZaKorisnika(idKorisnika) {
 export async function getFiguriceZaKorisnickoIme(korisnickoIme) {
   try {
     const response = await api.get(`/profil/${korisnickoIme}`);
-    console.log("Dobijene figurice: ", response.data);
+    console.log("Dobijene figurice korisnika: ", response.data);
     return response.data;
   } catch (error) {
     console.error(`Greška prilikom dohvatanja figurica za korisnika sa imenom ${korisnickoIme}:`, error);
@@ -116,6 +116,30 @@ export async function getRandomFigurice(limit) {
     return response.data;
   } catch (error) {
     console.error('Greška prilikom dohvatanja random figurica:', error);
+    throw error;
+  }
+}
+
+
+export async function mojeFigurice() {
+  try {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      throw new Error('Token nije pronađen. Prijavite se ponovo.');
+    }
+
+    console.log('Šaljem zahtev sa tokenom:', token);
+
+    const response = await api.get('/moje-figurice', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log('Dobijene figurice:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Greška prilikom dobijanja figurica korisnika:', error);
     throw error;
   }
 }
