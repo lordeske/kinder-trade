@@ -11,48 +11,30 @@ const api = axios.create({
 });
 
 
-export async function kreirajKorisnikaV1(korisnik) {
+
+export async function azurirajKorisnika(azuriraniInfoKorisnika) {
   try {
-    const response = await api.post("/", korisnik);
-    return response.data;
+    const token = localStorage.getItem("refreshToken"); 
+    if (!token) {
+      throw new Error("Nema validnog tokena. Korisnik nije prijavljen.");
+    }
+
+    console.log("Šaljem zahtev sa payload-om:", azuriraniInfoKorisnika);
+
+    const response = await api.put(`/azuriraj`, azuriraniInfoKorisnika, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log("Korisnik uspešno ažuriran:", response.data);
+    return response.data; 
   } catch (error) {
-    console.error("Greška prilikom kreiranja korisnika:", error);
+    console.error("Greška prilikom ažuriranja korisnika:", error.message);
     throw error;
   }
 }
 
-
-export async function sviKorisnici() {
-  try {
-    const response = await api.get("/");
-    return response.data;
-  } catch (error) {
-    console.error("Greška prilikom prikaza svih korisnika:", error);
-    throw error;
-  }
-}
-
-
-export async function nadjiKorisnika(idKorisnika) {
-  try {
-    const response = await api.get(`/${idKorisnika}`);
-    return response.data;
-  } catch (error) {
-    console.error("Greška prilikom prikaza korisnika:", error);
-    throw error;
-  }
-}
-
-
-export async function azurirajKorisnika(idKorisnika, azuriraniInfoKorisnika) {
-  try {
-    const response = await api.patch(`/${idKorisnika}`, azuriraniInfoKorisnika);
-    return response.data;
-  } catch (error) {
-    console.error("Greška prilikom ažuriranja korisnika:", idKorisnika, "podaci:", azuriraniInfoKorisnika);
-    throw error;
-  }
-}
 
 
 export async function obrisiKorisnika(idKorisnika) {
@@ -90,3 +72,22 @@ export async function getPredlozeniKorisnici(korisnickoIme) {
 
 
 
+export async function dohvatiMojProfil () {
+  try {
+    const token = localStorage.getItem("refreshToken")
+    console.log('Šaljem zahtev sa tokenom:', token);
+
+    const response = await axios.get('http://localhost:8080/api/korisnici/loginprofile/me', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    
+    console.log('Uspešan odgovor:', response.data);
+    return response.data
+  } catch (error) {
+    console.error('Greška:', error.response ? error.response.data : error.message);
+  }
+};
+
+dohvatiMojProfil();

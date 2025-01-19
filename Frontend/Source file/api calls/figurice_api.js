@@ -56,7 +56,21 @@ export async function kreirajFiguricu(figurica) {
 
 export async function azurirajFiguricu(id, azuriranaFigurica) {
   try {
-    const response = await api.put(`/id/${id}`, azuriranaFigurica);
+    const token = localStorage.getItem("refreshToken"); 
+    if (!token)
+    {
+      throw new Error("Token nije pronađen. Prijavite se ponovo.");
+    }
+
+    const response = await api.put(
+      `/azuriraj/${id}`, 
+      azuriranaFigurica,   
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     console.error(`Greška prilikom ažuriranja figurice sa ID ${id}:`, error);
@@ -71,16 +85,6 @@ export async function obrisiFiguricu(id) {
     return response.data;
   } catch (error) {
     console.error(`Greška prilikom brisanja figurice sa ID ${id}:`, error);
-    throw error;
-  }
-}
-
-export async function nadjiFiguricePoNazivu(naziv) {
-  try {
-    const response = await api.get(`/naziv/${naziv}`);
-    return response.data;
-  } catch (error) {
-    console.error(`Greška prilikom dohvatanja figurica sa nazivom ${naziv}:`, error);
     throw error;
   }
 }

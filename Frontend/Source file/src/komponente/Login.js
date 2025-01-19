@@ -1,12 +1,11 @@
 import { useState } from "react";
 import React from "react";
 import { useNavigate } from 'react-router-dom';
-import { kreirajKorisnikaV1 } from "../api calls/korisnik_api";
+import { registracija } from "../api calls/auth";
 import '../css folder/Login.css';
 
 
 
-/// DODATI CUSTOM HOOK ZA ADVANCED (later)
 
 
 
@@ -60,12 +59,12 @@ const Login = () => {
         };
 
         try {
-            await kreirajKorisnikaV1(korisnik);
+            await registracija(korisnik);
             setKorisnickoIme("");
             setLozinka("");
             setEmail("");
             setPoruka("Profil uspešno kreiran!");
-            navigacija("/dashboard")
+            navigacija("/loginStrana")
 
         } catch (error) {
             console.error("Greška prilikom kreiranja korisnika:", error);
@@ -110,6 +109,9 @@ const Login = () => {
               <button className="submit-btn" type="submit" disabled={loading}>
                 {loading ? "Kreiranje..." : "Kreiraj profil"}
               </button>
+              
+              <a  onClick={ () => navigacija("/loginStrana")}>Imas nalog? Loguj se!</a>
+             
             </form>
             {loading && <div className="spinner"></div>}
             {!loading && poruka && <p className="message-success">{poruka}</p>}

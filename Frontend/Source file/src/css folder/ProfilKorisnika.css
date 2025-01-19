@@ -1,4 +1,3 @@
-/* Osnovni stilovi za celu stranicu */
 .profile-page * {
     box-sizing: border-box;
     margin: 0;
@@ -6,7 +5,6 @@
     font-family: Arial, sans-serif;
 }
 
-/* Glavni layout */
 .profile-page {
     display: flex;
     flex-direction: row;
@@ -16,7 +14,6 @@
     background-color: #f4f4f4;
 }
 
-/* Sekcija sa informacijama o profilu */
 .profile-page .profile-info {
     width: 20%;
     background-color: #fff;
@@ -42,44 +39,39 @@
 }
 
 .profile-page .posts {
-    width: 50%; /* Smanjena širina sekcije */
-    flex-grow: 1; /* Zauzima sav preostali prostor */
+    width: 50%;
+    flex-grow: 1;
     display: flex;
-    flex-wrap: wrap; /* Elementi i dalje mogu prelaziti u redove */
+    flex-wrap: wrap;
     gap: 20px;
     background-color: #fff;
     padding: 20px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
-    overflow-y: auto; /* Omogućava vertikalni skrol */
-    max-height: 100%; /* Ograničava visinu box-a */
-    height: 100%; /* Sprečava promenu veličine */
-    scrollbar-width: thin; /* Stil za skrol traku (Firefox) */
+    overflow-y: auto;
+    max-height: 100%;
+    height: 100%;
+    scrollbar-width: thin;
     scrollbar-color: #ccc #f4f4f4;
 }
 
-
-
-/* Stilovi za vertikalni skrol */
 .profile-page .posts::-webkit-scrollbar {
-    width: 8px; /* Širina trake za vertikalni skrol */
+    width: 8px;
 }
 
 .profile-page .posts::-webkit-scrollbar-thumb {
-    background: #ccc; /* Boja "palca" */
+    background: #ccc;
     border-radius: 4px;
 }
 
 .profile-page .posts::-webkit-scrollbar-track {
-    background: #f4f4f4; /* Boja pozadine trake */
+    background: #f4f4f4;
 }
 
-
-/* Kartica figurice */
 .profile-page .post-box {
-    flex: 0 0 calc(33.33% - 20px); /* Tri kolone po redu */
-    max-width: calc(33.33% - 20px); /* Sprečava promenu širine */
-    height: 220px; /* Fiksna visina kartice */
+    flex: 0 0 calc(33.33% - 20px);
+    max-width: calc(33.33% - 20px);
+    height: 220px;
     background-color: #f9f9f9;
     border-radius: 10px;
     overflow: hidden;
@@ -91,7 +83,6 @@
     justify-content: space-between;
     padding: 10px;
 }
-
 
 .profile-page .post-box:hover {
     transform: translateY(-5px);
@@ -118,7 +109,6 @@
     color: #333;
 }
 
-/* Sekcija za predložene profile */
 .profile-page .suggested-profiles {
     width: 22%;
     background-color: #fff;
@@ -149,7 +139,6 @@
     font-size: 14px;
 }
 
-/* Loading container stilovi */
 .loading-container {
     display: flex;
     flex-direction: column;
@@ -177,7 +166,6 @@
     }
 }
 
-/* Responsivnost */
 @media (max-width: 768px) {
     .profile-page {
         flex-direction: column;

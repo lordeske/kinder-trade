@@ -1,0 +1,72 @@
+.kreiraj-figuricu-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f4f4f4;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+}
+
+.kreiraj-figuricu-page h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.kreiraj-figuricu-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 500px;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.kreiraj-figuricu-form input,
+.kreiraj-figuricu-form textarea,
+.kreiraj-figuricu-form select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #555;
+}
+
+.kreiraj-figuricu-form input:focus,
+.kreiraj-figuricu-form textarea:focus,
+.kreiraj-figuricu-form select:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+.kreiraj-figuricu-form button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #3498db;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.kreiraj-figuricu-form button:hover {
+    background-color: #2874a6;
+}
+
+.error-message {
+    color: #e74c3c;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.success-message {
+    color: #2ecc71;
+    font-size: 14px;
+    margin-top: 10px;
+}

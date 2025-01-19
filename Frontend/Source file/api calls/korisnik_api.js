@@ -12,20 +12,6 @@ const api = axios.create({
 
 
 
-
-export async function sviKorisnici() {
-  try {
-    const response = await api.get("/");
-    return response.data;
-  } catch (error) {
-    console.error("Greška prilikom prikaza svih korisnika:", error);
-    throw error;
-  }
-}
-
-
-
-
 export async function azurirajKorisnika(azuriraniInfoKorisnika) {
   try {
     const token = localStorage.getItem("refreshToken"); 

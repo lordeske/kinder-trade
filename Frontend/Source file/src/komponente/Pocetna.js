@@ -1,19 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import {  } from '../api calls/figurice_api';
+import { getRandomFigurice } from '../api calls/figurice_api';
 import { useNavigate } from 'react-router-dom';
 import '../css folder/Pocetna.css';
-import { getOmiljeneFigurice } from '../api calls/omiljeni_api';
 
-const MojeOmiljene = () => {
+const Pocetna = () => {
   const [figurice, setFigurice] = useState([]);
   const [greska, setGreska] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const navigacija = useNavigate();
 
-  
+  const dobijRandomFigurice = async () => {
+    try {
+      const dobijeneFigurice = await getRandomFigurice(15);
+      setFigurice(dobijeneFigurice);
+    } catch (error) {
+      setGreska("Greška prilikom dobijanja figurica.");
+      console.error("Greška prilikom dobijanja figurica: ", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  
+  const pogledajVlasnika = (vlasnik) => {
+    if (vlasnik) {
+      navigacija(`/profil/${vlasnik}`);
+    } else {
+      console.log("Vlasnik nije dostupan.");
+    }
+  };
 
 
   const pogledajFiguricu = (id) => {
@@ -25,24 +40,10 @@ const MojeOmiljene = () => {
   };
 
 
-  const dobijOmiljeneFigurice = async () => {
-      try {
-        const omiljeneFigrice = await getOmiljeneFigurice();
-        setFigurice(omiljeneFigrice);
-      } catch (error) {
-        setGreska("Greška prilikom dobijanja figurica.");
-        console.error("Greška prilikom dobijanja figurica: ", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-
 
 
   useEffect(() => {
-   
-    dobijOmiljeneFigurice()
+    dobijRandomFigurice();
   }, []);
 
   return (
@@ -71,11 +72,21 @@ const MojeOmiljene = () => {
                   />
                   <p>{figurica.naslov} {figurica.cena} RSD</p>
 
-                  
+                  <div className="pocetna-button-container">
+                    <button
+                      className="pocetna-button pocetna-button-primary"
+                      onClick={(e) => {
+                        e.stopPropagation(); 
+                        pogledajVlasnika(figurica.vlasnikFigurice);
+                      }}
+                    >
+                      Pogledaj vlasnika
+                    </button>
+                  </div>
                 </div>
               ))
             ) : (
-              <p>Dodaj figuricu da bi je imao u omiljenim</p>
+              <p>Nema dostupnih figurica za prikaz.</p>
             )}
           </>
 
@@ -85,6 +96,6 @@ const MojeOmiljene = () => {
   );
 };
 
-export default MojeOmiljene;
+export default Pocetna;
 
 
