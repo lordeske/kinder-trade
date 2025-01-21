@@ -2,14 +2,22 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { prikaziKorisnikaDrugima, getPredlozeniKorisnici } from '../api calls/korisnik_api';
 import { getFiguriceZaKorisnickoIme } from '../api calls/figurice_api';
-import { UserContext } from './KorisnikContext'; 
+import { getSveRecenzijeKorisnika } from "../api calls/recenzije_api";
+import { UserContext } from './KorisnikContext';
 import '../css folder/ProfilKorisnika.css';
+import ReactModal from 'react-modal'; 
+
+ReactModal.setAppElement('#root');
+
 
 const ProfilKorisnika = () => {
   const { korisnickoIme } = useParams();
   const navigacija = useNavigate();
   const { user, loading } = useContext(UserContext);
 
+
+  const [recenzije, setRecenzije] = useState([]);
+  const [modalVidljiv, setModalVidljiv] = useState(false);
   const [korisnik, setKorisnik] = useState({});
   const [figurice, setFigurice] = useState([]);
   const [predlozeniKorisnici, setPredlozeniKorisnici] = useState([]);
@@ -17,6 +25,7 @@ const ProfilKorisnika = () => {
   const [loadingFigurice, setLoadingFigurice] = useState(true);
   const [loadingPredlozeniKorisnici, setLoadingPredlozeniKorisnici] = useState(true);
   const [greska, setGreska] = useState(null);
+  const [loadingRecenzije, setLoadingRecenzije] = useState(false);
 
 
   useEffect(() => {
@@ -61,6 +70,20 @@ const ProfilKorisnika = () => {
     }
   };
 
+
+  const dobijRecenzije = async () => {
+    setLoadingRecenzije(true);
+    try {
+      const recenzijeData = await getSveRecenzijeKorisnika(korisnickoIme);
+      setRecenzije(recenzijeData.content);
+    } catch (error) {
+      console.error('Greška prilikom dobijanja recenzija:', error);
+      setGreska('Desila se greška prilikom prikaza recenzija.');
+    } finally {
+      setLoadingRecenzije(false);
+    }
+  };
+
   const pogledajFiguricu = (id) => {
     if (id) {
       navigacija(`/figurica/${id}`);
@@ -69,7 +92,13 @@ const ProfilKorisnika = () => {
     }
   };
 
- 
+  const toggleModal = () => {
+    setModalVidljiv(!modalVidljiv);
+    if (!modalVidljiv) {
+      dobijRecenzije();
+    }
+  };
+
   useEffect(() => {
     dobijKorisnika(korisnickoIme);
     dobijFiguriceKorisnika(korisnickoIme);
@@ -94,6 +123,20 @@ const ProfilKorisnika = () => {
             />
             <h2>{korisnik.korisnickoIme || 'Nepoznato korisničko ime'}</h2>
             <p>{`Datum kreiranja: ${korisnik.datumKreiranja ? korisnik.datumKreiranja : 'Nepoznato'}`}</p>
+            
+            {user && <button
+              className="pocetna-button pocetna-button-primary"
+              onClick={() => navigacija(`/kreiraj-recenziju/${korisnik.korisnickoIme}`)}
+            >
+              Dodaj recenziju
+            </button>}
+            
+            <button
+              className="pocetna-button pocetna-button-primary"
+              onClick={toggleModal}
+            >
+              Prikaži recenzije
+            </button>
           </>
         )}
       </div>
@@ -162,6 +205,29 @@ const ProfilKorisnika = () => {
           </>
         )}
       </div>
+
+      {/* Modal */}
+      <ReactModal
+        isOpen={modalVidljiv}
+        onRequestClose={toggleModal}
+        className="modal-content"
+        overlayClassName="modal-overlay"
+      >
+        <h2>Recenzije za {korisnickoIme}</h2>
+        <button onClick={toggleModal} className="close-modal">Zatvori</button>
+        {loadingRecenzije ? (
+          <div className="spinner"></div>
+        ) : (
+          
+          recenzije.map((recenzija) => (
+            <div key={recenzija.idRecenzije} className="recenzija">
+              <p><strong>Autor:</strong> {recenzija.imeRecenzenta}</p>
+              <p><strong>Ocena:</strong> {recenzija.ocena}/5</p>
+              <p><strong>Komentar:</strong> {recenzija.komentar}</p>
+            </div>
+          ))
+        )}
+      </ReactModal>
     </div>
   );
 };

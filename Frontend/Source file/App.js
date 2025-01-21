@@ -14,6 +14,7 @@ import AzurirajProfil from './komponente/AzurirajProfil';
 import MojeFigurice from './komponente/MojeFigurice';
 import MojeOmiljene from './komponente/MojeOmiljene';
 import AzurirajFiguricu from './komponente/AzurirajFiguricu';
+import KreirajRecenziju from './komponente/KreirajRecenziju';
 
 
 
@@ -35,6 +36,7 @@ function App() {
           <Routes>
             <Route path="/pocetna" element={<Pocetna />} />
             <Route path="/profil/:korisnickoIme" element={<ProfilKorisnika />} />
+            <Route path="/kreiraj-recenziju/:korisnickoIme" element={<KreirajRecenziju />} />
             <Route path="/azuriraj-figuricu/:idFigurice" element={<AzurirajFiguricu />} />
             <Route path="/figurica/:idFigurice" element={<Figurica />} />
             <Route path="/moj-profil" element={<MojProfil />} />

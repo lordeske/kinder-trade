@@ -10,15 +10,25 @@ const api = axios.create({
   },
 });
 
-export async function kreirajRecenziju(recenzijaRequest) {
-    try {
-      const response = await api.post('/', recenzijaRequest);
-      return response.data;
-    } catch (error) {
-      console.error('Greška prilikom kreiranja recenzije:', error);
-      throw error;
+export const kreirajRecenziju = async (recenzijaPodaci) => {
+  try {
+    const token = localStorage.getItem("refreshToken");
+    if (!token) {
+      throw new Error("Token nije pronađen. Prijavite se ponovo.");
     }
+
+    const response = await api.post("", recenzijaPodaci, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Greška prilikom kreiranja recenzije:", error);
+    throw error;
   }
+};;
 
 
   export async function getSveRecenzijeKorisnika(idRecenziranog) {
