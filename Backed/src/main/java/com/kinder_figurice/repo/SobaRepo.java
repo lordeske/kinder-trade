@@ -10,7 +10,6 @@ import java.util.Optional;
 @Repository
 public interface SobaRepo extends JpaRepository<Soba, Long> {
 
-   Optional<Soba> findByNazivSobe(String nazivSobe);
-
+    Optional<Soba> findByNazivSobe(String nazivSobe);
 
 }

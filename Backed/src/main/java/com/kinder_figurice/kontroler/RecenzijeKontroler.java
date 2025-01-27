@@ -6,7 +6,7 @@ import com.kinder_figurice.dto.RecenzijeDTO.RecenzijaKreiranjeDTO;
 
 import com.kinder_figurice.modeli.Recenzije;
 import com.kinder_figurice.servisi.RecenzijeServis;
-import org.springframework.data.domain.Page; // ISPRAVAN IMPORT
+import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.PageRequest;

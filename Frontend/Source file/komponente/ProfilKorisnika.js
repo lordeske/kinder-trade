@@ -130,6 +130,12 @@ const ProfilKorisnika = () => {
             >
               Dodaj recenziju
             </button>}
+            {user && <button
+              className="pocetna-button pocetna-button-primary"
+              onClick={() => navigacija(`/chat/${korisnik.korisnickoIme}`)}
+            >
+              Poruka
+            </button>}
             
             <button
               className="pocetna-button pocetna-button-primary"

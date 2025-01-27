@@ -9,16 +9,14 @@ import com.kinder_figurice.repo.KorisnikRepo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.sql.Struct;
-import java.time.LocalDateTime;
+import org.springframework.stereotype.Service;
+
+
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @Service
 public class FiguricaServis {

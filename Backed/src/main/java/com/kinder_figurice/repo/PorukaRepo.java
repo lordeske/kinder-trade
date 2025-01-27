@@ -10,5 +10,11 @@ import java.util.List;
 @Repository
 public interface PorukaRepo extends JpaRepository<Poruka, Long> {
 
+
     List<Poruka> findBySoba_NazivSobe(String nazivSobe);
+
+
+
 }
+
+

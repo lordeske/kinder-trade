@@ -31,6 +31,7 @@ const Navbar = () => {
             
             <li><Link to="/moje-figurice">Figurice</Link></li>
             <li><Link to="/moje-omiljene">Omiljene</Link></li>
+            <li><Link to="/razgovori">Mes</Link></li>
             <li className="navbar-user-dropdown">
               <button onClick={toggleDropdown} className="user-button">
                 {user.korisnickoIme} ▼

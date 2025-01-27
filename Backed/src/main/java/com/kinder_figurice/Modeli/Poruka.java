@@ -1,57 +1,30 @@
 package com.kinder_figurice.modeli;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.time.LocalDateTime;
 
-@Entity
 @Getter
 @Setter
-@NoArgsConstructor
+@Entity
 @AllArgsConstructor
-@Table(name = "poruke")
+@NoArgsConstructor
 public class Poruka {
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idPoruke;
+    private Long id;
 
-    @Column(nullable = false)
     private String posiljalac;
-
-    @Column(nullable = false)
     private String primalac;
-
-
-    @Column(nullable = false)
     private String sadrzajPoruke;
 
-
-    private LocalDateTime datumSlanjaPoruke;
-
     @ManyToOne
-    @JoinColumn(name = "idSobe")
-    @JsonIgnore
+    @JoinColumn(name = "soba_id", nullable = false)
     private Soba soba;
 
-
-    @PrePersist
-    public void prePresis()
-    {
-        this.datumSlanjaPoruke = LocalDateTime.now();
-    }
-
-
-
-
-
-
-
+    private LocalDateTime vremeSlanja = LocalDateTime.now();
 }

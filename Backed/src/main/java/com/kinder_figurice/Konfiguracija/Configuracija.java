@@ -47,7 +47,7 @@ public class Configuracija {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers("/api/korisnici", "/api/korisnici/profil/**", "/api/korisnici").permitAll()
+                        .requestMatchers("/api/korisnici", "/api/korisnici/profil/**", "/api/korisnici", "/api/chat").permitAll()
 
                         .requestMatchers("/api/korisnici/azuriraj/**", "/api/korisnici/obrisi/**" ,"/api/figurice/kreiraj/**",
                                 "/api/figurice/azuriraj/**", "/api/figurice/obrisi/**" ).authenticated()
