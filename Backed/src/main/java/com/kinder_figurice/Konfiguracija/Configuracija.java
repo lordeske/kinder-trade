@@ -62,22 +62,6 @@ public class Configuracija {
 
 
 
-/*
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults()) // Omogućava CORS sa podrazumevanim podešavanjima
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // Dozvoli sve zahteve bez autentifikacije
-                )
-                .httpBasic(Customizer.withDefaults());
-
-        return http.build();
-    }
-
- */
 
 
 

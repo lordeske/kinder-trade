@@ -7,10 +7,15 @@ import { logout } from '../api calls/auth';
 const Navbar = () => {
   const { user, loading } = useContext(UserContext);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isDropdownOpen2, setIsDropdownOpen2] = useState(false);
   const navigate = useNavigate();
 
   const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
+  };
+
+  const toggleDropdown2 = () => {
+    setIsDropdownOpen2((prev) => !prev);
   };
 
   const handleLogout = async () => {
@@ -25,13 +30,27 @@ const Navbar = () => {
         <Link to="/pocetna">Logo</Link>
       </div>
       <ul className="navbar-links">
-        <li><Link to="/pocetna">Početna</Link></li>
+
         {!loading && user ? (
           <>
             
             <li><Link to="/moje-figurice">Figurice</Link></li>
             <li><Link to="/moje-omiljene">Omiljene</Link></li>
-            <li><Link to="/razgovori">Mes</Link></li>
+            <li className="navbar-user-dropdown">
+              <button onClick={toggleDropdown2} className="user-button">
+                Chat ▼
+              </button>
+              {isDropdownOpen2 && (
+                <ul className="dropdown-menu">
+                  <li>
+                    <button onClick={() => navigate('/javniChat')}>Globalni razgovor</button>
+                  </li>
+                  <li>
+                  <button onClick={() => navigate('/privatni')}>Privatni razgovor</button>
+                  </li>
+                </ul>
+              )}
+            </li>
             <li className="navbar-user-dropdown">
               <button onClick={toggleDropdown} className="user-button">
                 {user.korisnickoIme} ▼

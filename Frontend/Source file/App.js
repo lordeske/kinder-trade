@@ -16,7 +16,8 @@ import MojeOmiljene from './komponente/MojeOmiljene';
 import AzurirajFiguricu from './komponente/AzurirajFiguricu';
 import KreirajRecenziju from './komponente/KreirajRecenziju';
 import ListaRazgovora from './komponente/ListaRazgovora';
-import Chat from './komponente/Chat';
+
+import JavniChat from './komponente/JavniChat';
 
 
 
@@ -47,7 +48,8 @@ function App() {
                 <Route path="/moje-figurice" element={<MojeFigurice />} />
                 <Route path="/moje-omiljene" element={<MojeOmiljene />} />
                 <Route path="/razgovori" element={<ListaRazgovora />} />
-                <Route path="/chat/:sagovornik" element={<Chat />} />
+                
+                <Route path="/javniChat" element={<JavniChat />} />
                 <Route path="*" element={<Navigate to="/login" />} />
 
               </Routes>
