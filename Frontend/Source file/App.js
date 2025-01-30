@@ -18,6 +18,7 @@ import KreirajRecenziju from './komponente/KreirajRecenziju';
 import ListaRazgovora from './komponente/ListaRazgovora';
 
 import JavniChat from './komponente/JavniChat';
+import PrivatniChat from './komponente/PrivatniChat';
 
 
 
@@ -48,9 +49,9 @@ function App() {
                 <Route path="/moje-figurice" element={<MojeFigurice />} />
                 <Route path="/moje-omiljene" element={<MojeOmiljene />} />
                 <Route path="/razgovori" element={<ListaRazgovora />} />
-                
                 <Route path="/javniChat" element={<JavniChat />} />
-                <Route path="*" element={<Navigate to="/login" />} />
+                <Route path="/chat/:sagovornik" element={<PrivatniChat />} />
+                
 
               </Routes>
             </div>

@@ -46,7 +46,7 @@ const Navbar = () => {
                     <button onClick={() => navigate('/javniChat')}>Globalni razgovor</button>
                   </li>
                   <li>
-                  <button onClick={() => navigate('/privatni')}>Privatni razgovor</button>
+                  <button onClick={() => navigate('/razgovori')}>Privatni razgovor</button>
                   </li>
                 </ul>
               )}

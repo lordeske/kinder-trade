@@ -20,8 +20,10 @@ public class WebSoketKonfiguracija implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
+        config.enableSimpleBroker("/topic" , "/user");
         config.setApplicationDestinationPrefixes("/app");
+        config.setUserDestinationPrefix("/user");
+
     }
 
     @Override
