@@ -35,3 +35,18 @@ export const sendPrivateMessage = (message) => {
     console.error("Nije povezan na WebSocket server. Poruka nije poslata.");
   }
 };
+
+
+export const fetchPrivateMessages = async (korisnik1, korisnik2) => {
+  try {
+      const response = await fetch(`http://localhost:8080/api/poruke/izmedju?korisnik1=${korisnik1}&korisnik2=${korisnik2}`);
+      if (!response.ok) {
+          throw new Error("Greška pri dohvatanju poruka");
+      }
+      return await response.json();
+  } catch (error) {
+      console.error("Greška pri dohvatanju privatnih poruka:", error);
+      return [];
+  }
+};
+

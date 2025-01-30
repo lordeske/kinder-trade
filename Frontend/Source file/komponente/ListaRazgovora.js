@@ -2,6 +2,8 @@ import React, { useEffect, useState, useContext } from "react";
 import { UserContext } from "./KorisnikContext";
 import { getRazgovori } from "../api calls/chat_api";
 import { useNavigate } from "react-router-dom";
+import '../css folder/ListaRazgovora.css';
+
 
 
 
@@ -51,14 +53,15 @@ const ListaRazgovora = () => {
 
 
     return (
-        <div>
-            <h1>Razgovori</h1>
+        <div className="lista-razgovora-container">
+            <h1 className="lista-razgovora-naslov">Razgovori</h1>
             {razgovori.length > 0 ? (
-                <ul>
+                <ul className="lista-razgovora">
                     {razgovori.map((sagovornik, index) => (
-                        <li key={index}>
-                            <button onClick={() => otvoriChat(sagovornik)}>
+                        <li key={index} className="lista-razgovora-item">
+                            <button className="lista-razgovora-dugme" onClick={() => otvoriChat(sagovornik)}>
                                 Razgovor sa: {sagovornik}
+                                <span className="lista-razgovora-ikonica">➝</span>
                             </button>
                         </li>
                     ))}
@@ -67,7 +70,8 @@ const ListaRazgovora = () => {
                 <p>Nema razgovora.</p>
             )}
         </div>
-    )
+    );
+    
 }
 
 export default ListaRazgovora
