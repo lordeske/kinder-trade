@@ -60,7 +60,7 @@ const MojeFigurice = () => {
                   onClick={() => pogledajFiguricu(figurica.id)}
                 >
                   <img
-                    src={`/publicslike/${figurica.naslov}.jpg`}
+                    src={`/publicslike/${figurica.slikaUrl}`}
                     alt={figurica.naslov || "Figurica"}
                     className="pocetna-slika"
                   />

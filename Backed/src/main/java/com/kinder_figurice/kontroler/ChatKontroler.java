@@ -18,10 +18,10 @@ public class ChatKontroler {
     @Autowired
     private ChatService chatService;
 
-    @GetMapping("/razgovori/{korisnickoIme}")
-    public ResponseEntity<List<String>> sviRazgovoriKorisnika(@PathVariable String korisnickoIme) {
+    @GetMapping("/razgovori")
+    public ResponseEntity<List<String>> sviRazgovoriKorisnika() {
         try {
-            List<String> razgovori = chatService.dobijSveRazgovoreZaKorisnika(korisnickoIme);
+            List<String> razgovori = chatService.dobijSveRazgovoreZaKorisnika();
             return ResponseEntity.ok(razgovori);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

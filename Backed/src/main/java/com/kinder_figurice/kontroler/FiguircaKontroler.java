@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -34,12 +35,13 @@ public class FiguircaKontroler {
     }
 
 
-    @PostMapping("/kreiraj")
-    public ResponseEntity<FiguricaDTO> kreirajFiguricu(@RequestBody FiguricaDTO figurica) {
+    @PostMapping(value = "/kreiraj", consumes = "multipart/form-data")
+    public ResponseEntity<FiguricaDTO> kreirajFiguricu(
+            @ModelAttribute FiguricaDTO figuricaDTO,
+            @RequestPart("slika") MultipartFile slika) {
 
-            FiguricaDTO novaFigurica = figuricaServis.kreirajFiguricu(figurica);
-            return new ResponseEntity<>(novaFigurica, HttpStatus.CREATED);
-
+        FiguricaDTO kreiranaFigurica = figuricaServis.kreirajFiguricu(figuricaDTO, slika);
+        return ResponseEntity.ok(kreiranaFigurica);
     }
 
     @PutMapping("azuriraj/{id}")

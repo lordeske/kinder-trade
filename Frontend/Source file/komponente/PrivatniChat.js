@@ -14,7 +14,7 @@ const PrivatniChat = () => {
     useEffect(() => {
         const loadMessages = async () => {
             if (user) {
-                const oldMessages = await fetchPrivateMessages(user.korisnickoIme, sagovornik);
+                const oldMessages = await fetchPrivateMessages(sagovornik);
                 setMessages(oldMessages);
             }
         };

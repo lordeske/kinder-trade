@@ -30,7 +30,7 @@ public class Figurica {
 
     private String stanje;
 
-    @Lob
+
     private String slikaUrl;
 
     private String kategorija;

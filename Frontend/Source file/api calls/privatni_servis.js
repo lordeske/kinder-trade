@@ -37,16 +37,33 @@ export const sendPrivateMessage = (message) => {
 };
 
 
-export const fetchPrivateMessages = async (korisnik1, korisnik2) => {
+export const fetchPrivateMessages = async (korisnik2) => {
   try {
-      const response = await fetch(`http://localhost:8080/api/poruke/izmedju?korisnik1=${korisnik1}&korisnik2=${korisnik2}`);
-      if (!response.ok) {
-          throw new Error("Greška pri dohvatanju poruka");
+    const token = localStorage.getItem("refreshToken");
+    if (!token) {
+      throw new Error("Token nije pronađen. Prijavite se ponovo.");
+    }
+
+    const response = await fetch(
+      `http://localhost:8080/api/poruke/izmedju?korisnik2=${korisnik2}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       }
-      return await response.json();
+    );
+
+    if (!response.ok) {
+      throw new Error("Greška pri dohvatanju poruka");
+    }
+
+    return await response.json();
   } catch (error) {
-      console.error("Greška pri dohvatanju privatnih poruka:", error);
-      return [];
+    console.error("Greška pri dohvatanju privatnih poruka:", error);
+    return [];
   }
 };
+
 

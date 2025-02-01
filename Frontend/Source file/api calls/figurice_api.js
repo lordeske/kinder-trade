@@ -25,49 +25,47 @@ export async function getFiguricaById(id) {
 }
 
 
-export async function kreirajFiguricu(figurica) {
+export async function kreirajFiguricu(figurica, slika) {
   try {
-    const token = localStorage.getItem("refreshToken"); 
+    const token = localStorage.getItem("refreshToken");
     if (!token) {
       throw new Error("Token nije pronađen. Prijavite se ponovo.");
     }
 
-    console.log('Šaljem zahtev sa tokenom:', token);
-    console.log(figurica)
+    const formData = new FormData();
+    Object.keys(figurica).forEach(key => formData.append(key, figurica[key]));
+    if (slika) formData.append("slika", slika); 
 
-    const response = await api.post(
-      `/kreiraj`, 
-      figurica,   
-      {
-        headers: {
-          Authorization: `Bearer ${token}`, 
-        },
-      }
-    );
+    const response = await axios.post(`${URL}/kreiraj`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
 
-    return response.data; 
+    return response.data;
   } catch (error) {
-    console.error('Greška prilikom kreiranja figurice:', error.response || error.message);
+    console.error("Greška prilikom kreiranja figurice:", error.response || error.message);
     throw error;
   }
 }
 
 
 
+
 export async function azurirajFiguricu(id, azuriranaFigurica) {
   try {
-    const token = localStorage.getItem("refreshToken"); 
-    if (!token)
-    {
+    const token = localStorage.getItem("refreshToken");
+    if (!token) {
       throw new Error("Token nije pronađen. Prijavite se ponovo.");
     }
 
     const response = await api.put(
-      `/azuriraj/${id}`, 
-      azuriranaFigurica,   
+      `/azuriraj/${id}`,
+      azuriranaFigurica,
       {
         headers: {
-          Authorization: `Bearer ${token}`, 
+          Authorization: `Bearer ${token}`,
         },
       }
     );

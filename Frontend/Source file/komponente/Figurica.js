@@ -82,7 +82,7 @@ const Figurica = () => {
     <div className="figurica-page">
       <div className="figurica-slika">
         <img
-          src={`/publicslike/${figurica.slikaUrl}.jpg`}
+          src={`/publicslike/${figurica.slikaUrl}`}
           alt={figurica.naslov || 'Figurica'}
         />
       </div>

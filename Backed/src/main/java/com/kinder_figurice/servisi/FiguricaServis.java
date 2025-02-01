@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.multipart.MultipartFile;
 
 
 import java.util.ArrayList;
@@ -28,6 +28,9 @@ public class FiguricaServis {
     @Autowired
     private KorisnikRepo korisnikRepo;
 
+
+    @Autowired
+    private FajlSistemUpravljac upravljacFajlovima;
 
 
     public List<Figurica> findAll() {
@@ -75,7 +78,7 @@ public class FiguricaServis {
 
 
 
-    public FiguricaDTO kreirajFiguricu(FiguricaDTO figuricaNova) {
+    public FiguricaDTO kreirajFiguricu(FiguricaDTO figuricaNova, MultipartFile slika) {
 
         String korisickoImeIzTokena = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -88,9 +91,15 @@ public class FiguricaServis {
         figurica.setCena(figuricaNova.getCena());
         figurica.setKategorija(figuricaNova.getKategorija());
         figurica.setStanje(figuricaNova.getStanje());
-        figurica.setSlikaUrl(figuricaNova.getSlikaUrl());
         figurica.setOpis(figuricaNova.getOpis());
         figurica.setKorisnik(korisnik);
+
+        if(!slika.isEmpty())
+        {
+          String imefajla = upravljacFajlovima.sacuvajSliku(slika);
+          figurica.setSlikaUrl(imefajla);
+        }
+
 
         Figurica sacuvanaFigurica = figuricaRepo.save(figurica);
 

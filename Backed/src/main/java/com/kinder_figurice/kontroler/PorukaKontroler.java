@@ -25,12 +25,12 @@ public class PorukaKontroler {
 
     @GetMapping("/izmedju")
     public ResponseEntity<List<Poruka>> svePorukeIzmedjuDvaKorisnika(
-            @RequestParam String korisnik1,
+
             @RequestParam String korisnik2
     )
     {
 
-        List<Poruka> poruke = chatService.svePorukeIzmedjuKorisnika(korisnik1,korisnik2);
+        List<Poruka> poruke = chatService.svePorukeIzmedjuKorisnika(korisnik2);
 
 
         return new ResponseEntity<>(poruke, HttpStatus.OK);

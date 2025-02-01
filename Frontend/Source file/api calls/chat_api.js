@@ -2,14 +2,14 @@ import axios from "axios";
 
 const BASE_URL = "http://localhost:8080/api/chat";
 
-export const getRazgovori = async (korisnickoIme) => {
+export const getRazgovori = async () => {
   try {
     const token = localStorage.getItem("refreshToken");
     if (!token) {
       throw new Error("Token nije pronađen. Prijavite se ponovo.");
     }
 
-    const response = await axios.get(`${BASE_URL}/razgovori/${korisnickoIme}`, {
+    const response = await axios.get(`${BASE_URL}/razgovori`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

@@ -23,7 +23,7 @@ const ListaRazgovora = () => {
     useEffect(() => {
         const dobijRazgovore = async () => {
             try {
-                const data = await getRazgovori(user.korisnickoIme);
+                const data = await getRazgovori();
                 setRazgovori(data);
             } catch (error) {
                 setGreska("Neuspjesno dobijanje razgovora.");
@@ -46,6 +46,8 @@ const ListaRazgovora = () => {
         navigacija(`/chat/${sagovornik}`)  //Otvaranje druge stranice sa sa sa chatom korisnika 2
     }
 
+
+    if (!user) return false;
     if (loading) return <p>Učitavanje razgovora...</p>;
     if (greska) return <p>{greska}</p>;
 
