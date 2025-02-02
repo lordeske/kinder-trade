@@ -15,7 +15,7 @@ const AzurirajFiguricu = () => {
   const [cena, setCena] = useState("");
   const [kategorija, setKategorija] = useState("");
   const [stanje, setStanje] = useState("");
-  const [slikaUrl, setSlikaUrl] = useState("");
+  const [slikaUrl, setSlikaUrl] = useState(null);
 
   const [poruka, setPoruka] = useState("");
   const [greska, setGreska] = useState("");
@@ -38,7 +38,7 @@ const AzurirajFiguricu = () => {
         setCena(dobijenaFigurica.cena);
         setKategorija(dobijenaFigurica.kategorija);
         setStanje(dobijenaFigurica.stanje);
-        setSlikaUrl(dobijenaFigurica.slikaUrl);
+        
       } catch (error) {
         console.error("Greška prilikom dobijanja figurice:", error);
         setGreska("Došlo je do greške prilikom dobijanja figurice.");
@@ -57,10 +57,10 @@ const AzurirajFiguricu = () => {
     setLoading(true);
 
     try {
-      const azuriraniPodaci = { naslov, opis, cena, kategorija, stanje, slikaUrl };
+      const azuriraniPodaci = { naslov, opis, cena, kategorija, stanje  };
       console.log("Priprema za slanje podataka:", azuriraniPodaci);
 
-      await azurirajFiguricu(idFigurice, azuriraniPodaci);
+      await azurirajFiguricu(azuriraniPodaci, idFigurice, slikaUrl !== null ? slikaUrl : undefined);
 
       setPoruka("Figurica je uspešno ažurirana!");
     } catch (error) {
@@ -117,12 +117,7 @@ const AzurirajFiguricu = () => {
           <option value="novo">Novo</option>
           <option value="korisceno">Korišćeno</option>
         </select>
-        <input
-          type="text"
-          placeholder="URL slike figurice"
-          value={slikaUrl}
-          onChange={(e) => setSlikaUrl(e.target.value)}
-        />
+        <input type="file" accept="image/*" onChange={(e) => setSlikaUrl(e.target.files[0])} />
         <button type="submit" disabled={loading}>
           {loading ? "Ažuriranje..." : "Ažuriraj Figuricu"}
         </button>

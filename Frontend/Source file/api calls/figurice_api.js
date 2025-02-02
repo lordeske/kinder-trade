@@ -53,19 +53,26 @@ export async function kreirajFiguricu(figurica, slika) {
 
 
 
-export async function azurirajFiguricu(id, azuriranaFigurica) {
+export async function azurirajFiguricu(azuriranaFigurica, id, slika) {
   try {
     const token = localStorage.getItem("refreshToken");
     if (!token) {
       throw new Error("Token nije pronađen. Prijavite se ponovo.");
     }
 
+    const formData = new FormData();
+    Object.keys(azuriranaFigurica).forEach(key => formData.append(key, azuriranaFigurica[key]));
+    if (slika) {
+      formData.append("slika", slika);
+    }
+
     const response = await api.put(
       `/azuriraj/${id}`,
-      azuriranaFigurica,
+      formData,
       {
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
         },
       }
     );
@@ -75,6 +82,7 @@ export async function azurirajFiguricu(id, azuriranaFigurica) {
     throw error;
   }
 }
+
 
 
 export async function obrisiFiguricu(id) {

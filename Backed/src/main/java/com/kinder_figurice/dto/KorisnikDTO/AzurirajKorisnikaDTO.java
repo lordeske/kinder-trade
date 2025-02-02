@@ -14,7 +14,7 @@ public class AzurirajKorisnikaDTO {
 
     private String lozinka;
 
-    private String slika;
+
 
 
 

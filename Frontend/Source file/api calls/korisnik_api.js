@@ -12,28 +12,37 @@ const api = axios.create({
 
 
 
-export async function azurirajKorisnika(azuriraniInfoKorisnika) {
+export async function azurirajKorisnika(azurirnaiKorisnik, slika) {
   try {
-    const token = localStorage.getItem("refreshToken"); 
+    const token = localStorage.getItem("refreshToken");
     if (!token) {
-      throw new Error("Nema validnog tokena. Korisnik nije prijavljen.");
+      throw new Error("Token nije pronađen. Prijavite se ponovo.");
     }
 
-    console.log("Šaljem zahtev sa payload-om:", azuriraniInfoKorisnika);
+    const formData = new FormData();
+    Object.keys(azurirnaiKorisnik).forEach(key => formData.append(key, azurirnaiKorisnik[key]));
+    if (slika) {
+      formData.append("slika", slika);
+    }
 
-    const response = await api.put(`/azuriraj`, azuriraniInfoKorisnika, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    console.log("Korisnik uspešno ažuriran:", response.data);
-    return response.data; 
+    const response = await api.put(
+      `/azuriraj`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data;
   } catch (error) {
-    console.error("Greška prilikom ažuriranja korisnika:", error.message);
+    console.error(`Greška prilikom ažuriranja korisnika `, error , error.message);
     throw error;
   }
 }
+
+
 
 
 

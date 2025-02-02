@@ -7,6 +7,9 @@ const MojProfil = () => {
   const { user, loading } = useContext(UserContext);
   const navigacija = useNavigate();
 
+
+  
+
   if (loading) {
     return <div>Učitavanje...</div>;
   }
@@ -30,7 +33,7 @@ const MojProfil = () => {
     <div className="moj-profil-page">
       <div className="moj-profil-header">
         <img
-          src={user.slika || '/publicslike/avatar.jpeg'}
+          src={user?.slika ? `/publicslike/${user.slika}` : '/publicslike/avatar.jpeg'}
           alt="Profilna slika"
           className="profil-slika"
         />

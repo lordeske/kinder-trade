@@ -44,10 +44,12 @@ public class FiguircaKontroler {
         return ResponseEntity.ok(kreiranaFigurica);
     }
 
-    @PutMapping("azuriraj/{id}")
-    public ResponseEntity<FiguricaDTO> updateFigurica(@PathVariable Long id, @RequestBody FiguricaUpdateDTO azuriranaFigurica) {
+    @PutMapping(value = "/azuriraj/{id}", consumes = "multipart/form-data")
+    public ResponseEntity<FiguricaDTO> updateFigurica(@PathVariable Long id,
+                                                      @ModelAttribute FiguricaUpdateDTO azuriranaFigurica,
+                                                    @RequestPart(value = "slika", required = false) MultipartFile slika) {
 
-            FiguricaDTO figuricaDTO = figuricaServis.azurirajFiguricu(azuriranaFigurica, id);
+            FiguricaDTO figuricaDTO = figuricaServis.azurirajFiguricu(azuriranaFigurica, id,slika);
             return ResponseEntity.ok(figuricaDTO);
 
     }

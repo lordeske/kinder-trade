@@ -23,6 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -43,6 +44,9 @@ public class KorisnikServis {
 
     @Autowired
     private JWTGenerator jwtGenerator;
+
+    @Autowired
+    private FajlSistemUpravljac fajlSistemUpravljac;
 
 
     public List<Korisnik> sviKorisnici()
@@ -93,41 +97,35 @@ public class KorisnikServis {
 
 
 
-    public Korisnik azurirajKorisnika(AzurirajKorisnikaDTO azuriraniKorisnik) {
-
+    public Korisnik azurirajKorisnika(AzurirajKorisnikaDTO azuriraniKorisnik, MultipartFile slika) {
         String korisnickoImeIzTokena = SecurityContextHolder.getContext().getAuthentication().getName();
 
+        Korisnik korisnikZaCuvanje = korisnikRepo.findByKorisnickoIme(korisnickoImeIzTokena)
+                .orElseThrow(() -> new RuntimeException("Korisnik nije pronađen sa imenom " + korisnickoImeIzTokena));
 
-        Optional<Korisnik> postojeciKorisnik = korisnikRepo.findByKorisnickoIme(korisnickoImeIzTokena);
-        if(postojeciKorisnik.isEmpty())
-        {
-            throw new RuntimeException("Korisnik nije pronadjen sa imenom "+ korisnickoImeIzTokena);
-        }
-
-        Korisnik korisnikZaCuvanje = postojeciKorisnik.get();
-
-        if(!korisnikZaCuvanje.getKorisnickoIme().equals(korisnickoImeIzTokena))
-        {
+        if (!korisnikZaCuvanje.getKorisnickoIme().equals(korisnickoImeIzTokena)) {
             throw new SecurityException("Nemate pravo da menjate podatke drugog korisnika.");
         }
 
 
         korisnikZaCuvanje.setEmail(azuriraniKorisnik.getEmail());
 
-        if(azuriraniKorisnik.getLozinka() != null && !azuriraniKorisnik.getLozinka().isEmpty())
-        {
-            korisnikZaCuvanje.setLozinka(passwordEncoder.encode(korisnikZaCuvanje.getLozinka()));
+
+        if (azuriraniKorisnik.getLozinka() != null && !azuriraniKorisnik.getLozinka().isEmpty()) {
+            korisnikZaCuvanje.setLozinka(passwordEncoder.encode(azuriraniKorisnik.getLozinka()));
         }
 
-        korisnikZaCuvanje.setSlika(azuriraniKorisnik.getSlika());
 
+        if (slika != null && !slika.isEmpty()) {
+            String imeFajla = fajlSistemUpravljac.sacuvajSliku(slika);
+            korisnikZaCuvanje.setSlika(imeFajla);
+        }
+
+        korisnikZaCuvanje.setDatumAzuriranja(LocalDateTime.now());
 
         return korisnikRepo.save(korisnikZaCuvanje);
-
-
-
-
     }
+
 
 
     public AuthResponseDTO loginKorisnika(LoginDTO loginDTO) {
@@ -224,7 +222,7 @@ public class KorisnikServis {
             PrikazKorisnikaDrugimaDTO dto = new PrikazKorisnikaDrugimaDTO();
             dto.setKorisnickoIme(korisnik.getKorisnickoIme());
             dto.setDatumKreiranja(korisnik.getDatumKreiranja());
-            dto.setDatumKreiranja(korisnik.getDatumKreiranja());
+            dto.setSlika(korisnik.getSlika());
 
 
             predlozeniKorisnici.add(dto);

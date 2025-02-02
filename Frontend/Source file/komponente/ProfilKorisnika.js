@@ -117,7 +117,7 @@ const ProfilKorisnika = () => {
         ) : (
           <>
             <img
-              src={korisnik.slika || '/publicslike/avatar.jpeg'}
+              src={korisnik?.slika ? `/publicslike/${korisnik.slika}` : '/publicslike/avatar.jpeg'}
               alt="Profilna slika"
               className="profile-avatar"
             />
@@ -164,7 +164,7 @@ const ProfilKorisnika = () => {
                   onClick={() => pogledajFiguricu(figurica.idFigurice)}
                 >
                   <img
-                    src={`/publicslike/${figurica.naslov}.jpg`}
+                    src={`/publicslike/${figurica.slikaUrl}`}
                     alt={figurica.naslov || 'Figurica'}
                     className="figurica-slika"
                   />
@@ -198,7 +198,7 @@ const ProfilKorisnika = () => {
                   onClick={() => navigacija(`/profil/${predlozeniKorisnik.korisnickoIme}`)}
                 >
                   <img
-                    src={predlozeniKorisnik.slika || '/publicslike/avatar.jpeg'}
+                    src={`/publicslike/${predlozeniKorisnik.slika}`}
                     alt={`Slika korisnika ${predlozeniKorisnik.korisnickoIme}`}
                     className="suggested-profile-avatar"
                   />

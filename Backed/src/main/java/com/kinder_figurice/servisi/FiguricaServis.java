@@ -110,7 +110,7 @@ public class FiguricaServis {
 
 
 
-    public FiguricaDTO azurirajFiguricu(FiguricaUpdateDTO figuricaInsert, Long idFigurice) {
+    public FiguricaDTO azurirajFiguricu(FiguricaUpdateDTO figuricaInsert, Long idFigurice , MultipartFile slika) {
 
         String korisnickoImeIzTokena = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -126,8 +126,13 @@ public class FiguricaServis {
         figurica.setKategorija(figuricaInsert.getKategorija());
         figurica.setStanje(figuricaInsert.getStanje());
         figurica.setNaslov(figuricaInsert.getNaslov());
-        figurica.setSlikaUrl(figuricaInsert.getSlikaUrl());
         figurica.setOpis(figuricaInsert.getOpis());
+
+        if (slika != null && !slika.isEmpty()) {
+            String imeFajla = upravljacFajlovima.sacuvajSliku(slika);
+            figurica.setSlikaUrl(imeFajla);
+        }
+
 
 
         figuricaRepo.save(figurica);

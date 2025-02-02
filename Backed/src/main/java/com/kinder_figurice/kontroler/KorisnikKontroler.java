@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,13 +34,15 @@ public class KorisnikKontroler {
     }
 
 
-    @PutMapping("/azuriraj")
-    public ResponseEntity<Korisnik> azurirajKorisnika(@RequestBody AzurirajKorisnikaDTO azuriraniKorisnik) {
+    @PutMapping(value = "/azuriraj", consumes = "multipart/form-data")
+    public ResponseEntity<Korisnik> azurirajKorisnika(
+            @ModelAttribute AzurirajKorisnikaDTO azuriraniKorisnik,
+            @RequestPart(value = "slika", required = false) MultipartFile slika) {
 
-            Korisnik izmenjenKorisnik = korisnikServis.azurirajKorisnika(azuriraniKorisnik);
-            return new ResponseEntity<>(izmenjenKorisnik, HttpStatus.OK);
-
+        Korisnik izmenjenKorisnik = korisnikServis.azurirajKorisnika(azuriraniKorisnik, slika);
+        return ResponseEntity.ok(izmenjenKorisnik);
     }
+
 
 
 
