@@ -24,5 +24,8 @@ public interface FiguricaRepo extends JpaRepository<Figurica, Long> {
    List<Figurica> dobaviRandomFigurice(@Param("limit") int limit);
 
 
+   boolean existByIdAndKorisnik(Long id, Korisnik vlasnik);
+
+
 
 }
