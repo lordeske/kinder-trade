@@ -7,7 +7,8 @@ import { logout } from '../api calls/auth';
 const Navbar = () => {
   const { user, loading } = useContext(UserContext);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isDropdownOpen2, setIsDropdownOpen2] = useState(false);
+  const [isDropdownOpen2, setIsDropdownOpen2] = useState(false);  
+  const [isDropdownOpen3, setIsDropdownOpen3] = useState(false);  
   const navigate = useNavigate();
 
   const toggleDropdown = () => {
@@ -16,6 +17,9 @@ const Navbar = () => {
 
   const toggleDropdown2 = () => {
     setIsDropdownOpen2((prev) => !prev);
+  };
+  const toggleDropdown3 = () => {
+    setIsDropdownOpen3((prev) => !prev);
   };
 
   const handleLogout = async () => {
@@ -34,8 +38,7 @@ const Navbar = () => {
         {!loading && user ? (
           <>
             
-            <li><Link to="/moje-figurice">Figurice</Link></li>
-            <li><Link to="/moje-omiljene">Omiljene</Link></li>
+            
             <li className="navbar-user-dropdown">
               <button onClick={toggleDropdown2} className="user-button">
                 Chat ▼
@@ -47,6 +50,21 @@ const Navbar = () => {
                   </li>
                   <li>
                   <button onClick={() => navigate('/razgovori')}>Privatni razgovor</button>
+                  </li>
+                </ul>
+              )}
+            </li>
+            <li className="navbar-user-dropdown">
+              <button onClick={toggleDropdown3} className="user-button">
+                Figurice ▼
+              </button>
+              {isDropdownOpen3 && (
+                <ul className="dropdown-menu">
+                  <li>
+                    <button onClick={() => navigate('/moje-figurice')}>Moje Figurice</button>
+                  </li>
+                  <li>
+                  <button onClick={() => navigate('/moje-omiljene')}>Omiljene figurice</button>
                   </li>
                 </ul>
               )}

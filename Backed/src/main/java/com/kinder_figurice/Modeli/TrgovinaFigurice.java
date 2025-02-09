@@ -1,5 +1,6 @@
 package com.kinder_figurice.modeli;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class TrgovinaFigurice {
 
     @ManyToOne
     @JoinColumn(name = "trgovina_id", nullable = false)
+    @JsonIgnore
     private Trgovina trgovina;
 
     @ManyToOne

@@ -132,6 +132,12 @@ const ProfilKorisnika = () => {
             </button>}
             {user && <button
               className="pocetna-button pocetna-button-primary"
+              onClick={() => navigacija(`/kreiraj-trgovinu/${korisnik.korisnickoIme}`)}
+            >
+              Zapocni Trade
+            </button>}
+            {user && <button
+              className="pocetna-button pocetna-button-primary"
               onClick={() => navigacija(`/chat/${korisnik.korisnickoIme}`)}
             >
               Poruka

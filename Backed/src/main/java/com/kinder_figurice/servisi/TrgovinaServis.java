@@ -1,6 +1,7 @@
 package com.kinder_figurice.servisi;
 
-import com.kinder_figurice.dto.TradeDto.TrgovinaDto;
+import com.kinder_figurice.dto.TradeDto.TrgovinaDtoFigurice;
+import com.kinder_figurice.dto.TradeDto.TrgovinaNoStatusDto;
 import com.kinder_figurice.modeli.*;
 import com.kinder_figurice.repo.FiguricaRepo;
 import com.kinder_figurice.repo.KorisnikRepo;
@@ -10,14 +11,14 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TrgovinaServis {
+
 
 
 
@@ -34,8 +35,12 @@ public class TrgovinaServis {
     private TrgovinaFiguriceRepo trgovinaFiguriceRepo;
 
 
-    public Trgovina kreirajTrgovinu(TrgovinaDto trgovinaDTO)
+    public Trgovina kreirajTrgovinu(TrgovinaNoStatusDto trgovinaDTO)
     {
+
+
+        String korisnickoImeIzTokena = SecurityContextHolder.getContext().getAuthentication().getName();
+
 
 
         Korisnik posiljalac = korisnikRepo.findByKorisnickoIme(trgovinaDTO.getPosiljalac())
@@ -46,10 +51,15 @@ public class TrgovinaServis {
                 .orElseThrow(()-> new EntityNotFoundException("Nije pronadjen primalac"));
 
 
+        if(!korisnickoImeIzTokena.equals(posiljalac.getKorisnickoIme()))
+        {
+            throw new SecurityException("Nemas pravo da kreiras offer");
+        }
+
 
 
         boolean svePonudjeneValidne = trgovinaDTO.getPonudjeneFigurice().stream()
-                .allMatch(figuricaId -> figuricaRepo.existByIdAndKorisnik(figuricaId, posiljalac));
+                .allMatch(figuricaId -> figuricaRepo.existsByIdAndKorisnik(figuricaId, posiljalac));
 
         if(!svePonudjeneValidne)
         {
@@ -60,7 +70,7 @@ public class TrgovinaServis {
 
 
         boolean sveZatrazeneValidne = trgovinaDTO.getTrazeneFigurice().stream()
-                .allMatch(figuricaId -> figuricaRepo.existByIdAndKorisnik(figuricaId, primalac));
+                .allMatch(figuricaId -> figuricaRepo.existsByIdAndKorisnik(figuricaId, primalac));
 
         if(!sveZatrazeneValidne)
         {
@@ -74,6 +84,7 @@ public class TrgovinaServis {
         trgovina.setPosiljalac(posiljalac);
         trgovina.setPrimalac(primalac);
         trgovina.setStatus(StatusTrgovine.PENDING);
+        trgovina.setFigurice(new ArrayList<>());
 
         trgovinaRepo.save(trgovina);
 
@@ -125,55 +136,20 @@ public class TrgovinaServis {
         }
 
 
-        for(TrgovinaFigurice trgovinaFigurice : trgovina.getFigurice())
-        {
+        for (TrgovinaFigurice trgovinaFigurice : trgovina.getFigurice()) {
+            Korisnik trenutniVlasnik = trgovinaFigurice.getFigurica().getKorisnik();
 
-            if(trgovinaFigurice.getTip() == TipTrgovine.PONUDJENA)
-            {
-
-                if(!trgovinaFigurice.getFigurica().getKorisnik().equals(trgovina.getPosiljalac()))
-                {
-                    throw new IllegalArgumentException("Posiljalac nije vlasnik figurice");
-                }
-
-            }
-            else /// ovde ce da bude kontra TipTrgovine.TRAZENA
-            {
-
-
-                if(!trgovinaFigurice.getFigurica().getKorisnik().equals(trgovina.getPrimalac()))
-                {
-                    throw new IllegalArgumentException("Primalac nije vlasnik figurice");
-                }
+            if ((trgovinaFigurice.getTip() == TipTrgovine.PONUDJENA && !trenutniVlasnik.equals(trgovina.getPosiljalac())) ||
+                    (trgovinaFigurice.getTip() == TipTrgovine.TRAZENA && !trenutniVlasnik.equals(trgovina.getPrimalac()))) {
+                throw new IllegalArgumentException("Figurica ne pripada očekivanom vlasniku.");
             }
 
 
-
-        }
-
-
-        for(TrgovinaFigurice trgovinaFigurice : trgovina.getFigurice())
-        {
-
-            if(trgovinaFigurice.getTip() == TipTrgovine.PONUDJENA)
-            {
-
-                 trgovinaFigurice.getFigurica().setKorisnik(trgovina.getPrimalac());
-
-
-            }
-            else
-            {
-
-                trgovinaFigurice.getFigurica().setKorisnik(trgovina.getPosiljalac());
-            }
-
-
+            trgovinaFigurice.getFigurica()
+                    .setKorisnik(trgovinaFigurice.getTip() == TipTrgovine.PONUDJENA ? trgovina.getPrimalac() : trgovina.getPosiljalac());
             figuricaRepo.save(trgovinaFigurice.getFigurica());
-
-
-
         }
+
 
 
         trgovina.setStatus(StatusTrgovine.ACCEPTED);
@@ -188,29 +164,126 @@ public class TrgovinaServis {
     public Trgovina odbijTrgovinu(Long trgovinaID)
     {
 
+        String korisnickoImeIzTokena = SecurityContextHolder.getContext().getAuthentication().getName();
+
         Trgovina trgovina = trgovinaRepo.findById(trgovinaID).orElseThrow(
                 ()-> new EntityNotFoundException("Trgovina sa ID " + trgovinaID + " ne postoji" )
         );
 
+
+        if (!trgovina.getPrimalac().getKorisnickoIme().equals(korisnickoImeIzTokena)) {
+            throw new SecurityException("Nisi ovlašćen da povučeš ponudu.");
+        }
 
         trgovina.setStatus(StatusTrgovine.DECLINED);
         return  trgovinaRepo.save(trgovina);
 
 
     }
+    public Trgovina povuciTrgovinu(Long trgovinaID) {
+        String korisnickoImeIzTokena = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Trgovina trgovina = trgovinaRepo.findById(trgovinaID)
+                .orElseThrow(() -> new EntityNotFoundException("Trgovina sa ID " + trgovinaID + " ne postoji"));
+
+        if (!trgovina.getPosiljalac().getKorisnickoIme().equals(korisnickoImeIzTokena)) {
+            throw new SecurityException("Nisi ovlašćen da povučeš ponudu.");
+        }
+
+        trgovina.setStatus(StatusTrgovine.DECLINED);
+        return trgovinaRepo.save(trgovina);
+    }
 
 
-    public  Trgovina
+
+    public Trgovina posaljiCounterPonudu (Long trgovinaID, TrgovinaDtoFigurice noveFigurice )
+    {
 
 
-    public List<Trgovina> mojeTrgovine() {
+
+
+        Trgovina trgovina = trgovinaRepo.findById(trgovinaID)
+                .orElseThrow(()-> new EntityNotFoundException("Trgovina sa ID " + trgovinaID + " ne postoji" ));
+
+
+        if(!trgovina.getStatus().equals(StatusTrgovine.PENDING))
+        {
+            throw new RuntimeException("Vec je gotova razmjena");
+        }
+
+
+        /// Da bi kasnije promijenio (jer samo primalac moze da privhati offer)
+        Korisnik noviPosiljalac = trgovina.getPrimalac();
+        Korisnik noviPrimalac = trgovina.getPosiljalac();
+
+
+        List<TrgovinaFigurice> ponudjeneTrgovinaFigurice = noveFigurice.getPonudjeneFigurice().stream().map(
+                figuricaID -> new TrgovinaFigurice(trgovina, figuricaRepo.findById(figuricaID)
+                        .orElseThrow(() -> new RuntimeException("Figurica nije pronađena!")), true))
+                .toList();
+
+
+        List<TrgovinaFigurice> trazeneTrgovinaFigurice = noveFigurice.getTrazeneFigurice().stream().map(
+                        figuricaID -> new TrgovinaFigurice(trgovina, figuricaRepo.findById(figuricaID)
+                                .orElseThrow(() -> new RuntimeException("Figurica nije pronađena!")), false))
+                .toList();
+
+
+        boolean svePonudjeneValidne = noveFigurice.getPonudjeneFigurice().stream()
+                .allMatch(figuricaId -> figuricaRepo.existsByIdAndKorisnik(figuricaId, noviPosiljalac));
+
+        boolean sveTrazeneValidne = noveFigurice.getTrazeneFigurice().stream()
+                .allMatch(figuricaId -> figuricaRepo.existsByIdAndKorisnik(figuricaId, noviPrimalac));
+
+        if(!svePonudjeneValidne || !sveTrazeneValidne)
+        {
+            throw new IllegalArgumentException("Neke od figurica ne prripadaju vlasniku od onih koje si izabrao");
+        }
+
+
+        trgovina.setPrimalac(noviPrimalac);
+        trgovina.setPosiljalac(noviPosiljalac);
+
+        trgovina.getFigurice().clear();
+        trgovina.getFigurice().addAll(ponudjeneTrgovinaFigurice);
+        trgovina.getFigurice().addAll(trazeneTrgovinaFigurice);
+
+        trgovina.setStatus(StatusTrgovine.COUNTER_OFFER);
+
+        return trgovinaRepo.save(trgovina);
+
+
+
+    }
+
+
+
+    public List<Trgovina> sveMojeTrgovine() {
 
         String korisnickoImeIzTokena = SecurityContextHolder.getContext().getAuthentication().getName();
 
         Korisnik korisnik = korisnikRepo.findByKorisnickoIme(korisnickoImeIzTokena)
                 .orElseThrow(() -> new RuntimeException("Korisnik nije pronađen!"));
 
-        return trgovinaRepo.findByPosiljalacOrPrimalac(korisnik);
+        return trgovinaRepo.findByPosiljalacOrPrimalac(korisnik, korisnik);
+    }
+
+    public List<Trgovina> sveMojePendingTrgovine() {
+        String korisnickoImeIzTokena = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Korisnik korisnik = korisnikRepo.findByKorisnickoIme(korisnickoImeIzTokena)
+                .orElseThrow(() -> new RuntimeException("Korisnik nije pronađen!"));
+
+        return trgovinaRepo.findAllByKorisnikAndStatus(korisnik, StatusTrgovine.PENDING);
+    }
+
+    public List<Trgovina> sveMojeCounterTrgovine() {
+        String korisnickoImeIzTokena = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Korisnik korisnik = korisnikRepo.findByKorisnickoIme(korisnickoImeIzTokena)
+                .orElseThrow(() -> new RuntimeException("Korisnik nije pronađen!"));
+
+        return trgovinaRepo.findAllByKorisnikAndStatus(korisnik, StatusTrgovine.COUNTER_OFFER);
     }
 
 }

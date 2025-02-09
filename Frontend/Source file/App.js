@@ -19,6 +19,9 @@ import ListaRazgovora from './komponente/ListaRazgovora';
 
 import JavniChat from './komponente/JavniChat';
 import PrivatniChat from './komponente/PrivatniChat';
+import KreirajTrgovinu from './komponente/KreirajTrgovinu';
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 
 
@@ -26,39 +29,47 @@ import PrivatniChat from './komponente/PrivatniChat';
 function App() {
   return (
     <Router>
-      <Routes>
+  <Routes>
+    <Route path="/login" element={<Login />} />
+    <Route path="/loginStrana" element={<LoginStrana />} />
 
-        <Route path="/login" element={<Login />} />
-        <Route path="/loginStrana" element={<LoginStrana />} />
+    <Route
+      path="/*"
+      element={
+        <div className="app-container">
+          <Navbar />
+          <Routes>
+            <Route path="/pocetna" element={<Pocetna />} />
+            <Route path="/profil/:korisnickoIme" element={<ProfilKorisnika />} />
+            <Route path="/kreiraj-recenziju/:korisnickoIme" element={<KreirajRecenziju />} />
+            <Route path="/azuriraj-figuricu/:idFigurice" element={<AzurirajFiguricu />} />
+            <Route path="/figurica/:idFigurice" element={<Figurica />} />
+            <Route path="/moj-profil" element={<MojProfil />} />
+            <Route path="/kreiraj-figuricu" element={<KreirajFiguricu />} />
+            <Route path="/azuriraj-profil" element={<AzurirajProfil />} />
+            <Route path="/moje-figurice" element={<MojeFigurice />} />
+            <Route path="/moje-omiljene" element={<MojeOmiljene />} />
+            <Route path="/razgovori" element={<ListaRazgovora />} />
+            <Route path="/javniChat" element={<JavniChat />} />
+            <Route path="/chat/:sagovornik" element={<PrivatniChat />} />
+
+           
+            <Route
+              path="/kreiraj-trgovinu/:korisnickoIme"
+              element={
+                <DndProvider backend={HTML5Backend}>
+                  <KreirajTrgovinu />
+                </DndProvider>
+              }
+            />
+          </Routes>
+        </div>
+      }
+    />
+  </Routes>
+</Router>
 
 
-        <Route
-          path="/*"
-          element={
-            <div className="app-container">
-              <Navbar />
-              <Routes>
-                <Route path="/pocetna" element={<Pocetna />} />
-                <Route path="/profil/:korisnickoIme" element={<ProfilKorisnika />} />
-                <Route path="/kreiraj-recenziju/:korisnickoIme" element={<KreirajRecenziju />} />
-                <Route path="/azuriraj-figuricu/:idFigurice" element={<AzurirajFiguricu />} />
-                <Route path="/figurica/:idFigurice" element={<Figurica />} />
-                <Route path="/moj-profil" element={<MojProfil />} />
-                <Route path="/kreiraj-figuricu" element={<KreirajFiguricu />} />
-                <Route path="/azuriraj-profil" element={<AzurirajProfil />} />
-                <Route path="/moje-figurice" element={<MojeFigurice />} />
-                <Route path="/moje-omiljene" element={<MojeOmiljene />} />
-                <Route path="/razgovori" element={<ListaRazgovora />} />
-                <Route path="/javniChat" element={<JavniChat />} />
-                <Route path="/chat/:sagovornik" element={<PrivatniChat />} />
-                
-
-              </Routes>
-            </div>
-          }
-        />
-      </Routes>
-    </Router>
 
   );
 }
