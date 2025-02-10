@@ -111,12 +111,12 @@
 }
 
 .pocetna-button-primary {
-    background-color: #3498db; 
+    background-color: #218838; 
     color: white;
 }
 
 .pocetna-button-primary:hover {
-    background-color: #2980b9; 
+    background-color: #218810; 
     transform: translateY(-2px); 
 }
 

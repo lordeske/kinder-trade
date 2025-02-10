@@ -4,6 +4,7 @@ package com.kinder_figurice.kontroler;
 import com.kinder_figurice.dto.TradeDto.TrgovinaDto;
 import com.kinder_figurice.dto.TradeDto.TrgovinaDtoFigurice;
 import com.kinder_figurice.dto.TradeDto.TrgovinaNoStatusDto;
+import com.kinder_figurice.dto.TradeDto.TrgovinaPrikaz;
 import com.kinder_figurice.modeli.Trgovina;
 import com.kinder_figurice.servisi.TrgovinaServis;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,19 +90,19 @@ public class TrgovinaKontroler {
 
 
     @GetMapping("/moje")
-    public ResponseEntity<List<Trgovina>> sveMojeTrgovine() {
+    public ResponseEntity<List<TrgovinaPrikaz>> sveMojeTrgovine() {
         return ResponseEntity.ok(trgovinaServis.sveMojeTrgovine());
     }
 
 
     @GetMapping("/pending")
-    public ResponseEntity<List<Trgovina>> sveMojePendingTrgovine() {
+    public ResponseEntity<List<TrgovinaPrikaz>> sveMojePendingTrgovine() {
         return ResponseEntity.ok(trgovinaServis.sveMojePendingTrgovine());
     }
 
 
     @GetMapping("/counter")
-    public ResponseEntity<List<Trgovina>> sveMojeCounterTrgovine() {
+    public ResponseEntity<List<TrgovinaPrikaz>> sveMojeCounterTrgovine() {
         return ResponseEntity.ok(trgovinaServis.sveMojeCounterTrgovine());
     }
 

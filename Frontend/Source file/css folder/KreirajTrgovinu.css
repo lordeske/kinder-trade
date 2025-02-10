@@ -1,0 +1,118 @@
+/* Glavni kontejner */
+.kreiraj-trgovinu-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Naslov */
+.kreiraj-trgovinu-container h2 {
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Sekcije figurica */
+.figurice-sekcija {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Naslovi sekcija */
+.figurice-sekcija h3 {
+    font-size: 18px;
+    color: #444;
+    margin-bottom: 10px;
+}
+
+/* Lista figurica */
+.figurice-lista {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+}
+
+/* Kartica figurice */
+.figurica {
+    width: 120px;
+    padding: 10px;
+    background: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.2s ease-in-out;
+}
+
+.figurica:hover {
+    transform: scale(1.05);
+}
+
+/* Slika figurice */
+.figurica img {
+    width: 80px;
+    height: 80px;
+    border-radius: 5px;
+    object-fit: cover;
+}
+
+/* Naslov figurice */
+.figurica p {
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* Dugmad */
+.trgovina-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.trgovina-btn:hover {
+    background-color: #218838;
+}
+
+.trgovina-btn-remove {
+    background-color: #dc3545;
+}
+
+.trgovina-btn-remove:hover {
+    background-color: #c82333;
+}
+
+/* Trgovina box */
+.trgovina-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: #e9ecef;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Dugme za kreiranje trgovine */
+.trgovina-btn-kreiraj {
+    width: 100%;
+    background-color: #218838;
+    padding: 10px;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+.trgovina-btn-kreiraj:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}

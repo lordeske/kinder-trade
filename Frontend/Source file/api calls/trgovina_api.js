@@ -15,6 +15,7 @@ api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem("refreshToken");
         if (token) {
+            console.log("Kreiram trgovinu sa tokenom", token);
             config.headers.Authorization = `Bearer ${token}`;
         } else {
             console.warn("Token nije pronađen. Korisnik možda nije prijavljen.");
@@ -28,7 +29,7 @@ api.interceptors.request.use(
 
 export async function kreirajTrgovinu(trgovina) {
     try {
-        const response = await api.post("/", trgovina);
+        const response = await api.post(`${URL}`, trgovina);
         console.log(" Trgovina uspešno kreirana:", response.data);
         return response.data;
     } catch (error) {

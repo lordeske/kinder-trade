@@ -2,6 +2,8 @@ package com.kinder_figurice.servisi;
 
 import com.kinder_figurice.dto.TradeDto.TrgovinaDtoFigurice;
 import com.kinder_figurice.dto.TradeDto.TrgovinaNoStatusDto;
+import com.kinder_figurice.dto.TradeDto.TrgovinaPrikaz;
+
 import com.kinder_figurice.modeli.*;
 import com.kinder_figurice.repo.FiguricaRepo;
 import com.kinder_figurice.repo.KorisnikRepo;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TrgovinaServis {
@@ -258,32 +261,78 @@ public class TrgovinaServis {
 
 
 
-    public List<Trgovina> sveMojeTrgovine() {
+    public List<TrgovinaPrikaz> sveMojeTrgovine() {
 
         String korisnickoImeIzTokena = SecurityContextHolder.getContext().getAuthentication().getName();
 
         Korisnik korisnik = korisnikRepo.findByKorisnickoIme(korisnickoImeIzTokena)
                 .orElseThrow(() -> new RuntimeException("Korisnik nije pronađen!"));
 
-        return trgovinaRepo.findByPosiljalacOrPrimalac(korisnik, korisnik);
+        List <Trgovina> mojeTrgovine =  trgovinaRepo.findByPosiljalacOrPrimalac(korisnik, korisnik);
+
+        return mapirajUTrgovinaPrikaz(mojeTrgovine);
+
     }
 
-    public List<Trgovina> sveMojePendingTrgovine() {
+    public List<TrgovinaPrikaz> sveMojePendingTrgovine() {
         String korisnickoImeIzTokena = SecurityContextHolder.getContext().getAuthentication().getName();
 
         Korisnik korisnik = korisnikRepo.findByKorisnickoIme(korisnickoImeIzTokena)
                 .orElseThrow(() -> new RuntimeException("Korisnik nije pronađen!"));
 
-        return trgovinaRepo.findAllByKorisnikAndStatus(korisnik, StatusTrgovine.PENDING);
+        List <Trgovina> mojeTrgovine = trgovinaRepo.findAllByKorisnikAndStatus(korisnik, StatusTrgovine.PENDING);
+        return mapirajUTrgovinaPrikaz(mojeTrgovine);
     }
 
-    public List<Trgovina> sveMojeCounterTrgovine() {
+    public List<TrgovinaPrikaz> sveMojeCounterTrgovine() {
         String korisnickoImeIzTokena = SecurityContextHolder.getContext().getAuthentication().getName();
 
         Korisnik korisnik = korisnikRepo.findByKorisnickoIme(korisnickoImeIzTokena)
                 .orElseThrow(() -> new RuntimeException("Korisnik nije pronađen!"));
 
-        return trgovinaRepo.findAllByKorisnikAndStatus(korisnik, StatusTrgovine.COUNTER_OFFER);
+        List <Trgovina> mojeTrgovine =  trgovinaRepo.findAllByKorisnikAndStatus(korisnik, StatusTrgovine.COUNTER_OFFER);
+        return mapirajUTrgovinaPrikaz(mojeTrgovine);
     }
+
+
+
+
+    public List<TrgovinaPrikaz> mapirajUTrgovinaPrikaz(List<Trgovina> trgovinaObjekat)
+    {
+        List<TrgovinaPrikaz> novaLista = new ArrayList<>();
+
+        for(Trgovina trgovina : trgovinaObjekat)
+        {
+            TrgovinaPrikaz trgovinaPrikaz = new TrgovinaPrikaz();
+            trgovinaPrikaz.setPosiljalac(trgovina.getPosiljalac().getKorisnickoIme());
+            trgovinaPrikaz.setPrimalac(trgovina.getPrimalac().getKorisnickoIme());
+            trgovinaPrikaz.setStatus(trgovina.getStatus());
+            trgovinaPrikaz.setId(trgovina.getId());
+
+            List<Figurica> ponudjeneFigurice  = trgovina.getFigurice().stream()
+                    .filter(figurica -> figurica.getTip() == TipTrgovine.PONUDJENA)
+                    .map(TrgovinaFigurice::getFigurica)
+                    .toList();
+
+
+            List<Figurica> trazeneFigurica = trgovina.getFigurice().stream()
+                    .filter(figurica -> figurica.getTip() == TipTrgovine.TRAZENA)
+                    .map(TrgovinaFigurice::getFigurica)
+                    .toList();
+
+            trgovinaPrikaz.setTrazeneFigurice(trazeneFigurica);
+            trgovinaPrikaz.setPonudjeneFigurice(ponudjeneFigurice);
+
+
+            novaLista.add(trgovinaPrikaz);
+
+        }
+
+        return novaLista;
+
+
+    }
+
+
 
 }
