@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface TrgovinaFiguriceRepo extends JpaRepository<TrgovinaFigurice, Long> {
     List<TrgovinaFigurice> findByTrgovina(Trgovina trgovina);
+    void deleteAllByTrgovina(Trgovina trgovina);
 }

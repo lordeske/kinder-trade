@@ -9,6 +9,7 @@ const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isDropdownOpen2, setIsDropdownOpen2] = useState(false);  
   const [isDropdownOpen3, setIsDropdownOpen3] = useState(false);  
+  const [isDropdownOpen4, setIsDropdownOpen4] = useState(false);  
   const navigate = useNavigate();
 
   const toggleDropdown = () => {
@@ -20,6 +21,9 @@ const Navbar = () => {
   };
   const toggleDropdown3 = () => {
     setIsDropdownOpen3((prev) => !prev);
+  };
+  const toggleDropdown4 = () => {
+    setIsDropdownOpen4((prev) => !prev);
   };
 
   const handleLogout = async () => {
@@ -54,6 +58,7 @@ const Navbar = () => {
                 </ul>
               )}
             </li>
+            <li><Link to="/moje-trgovine">Trgovine</Link></li>
             <li className="navbar-user-dropdown">
               <button onClick={toggleDropdown3} className="user-button">
                 Figurice ▼
@@ -68,6 +73,7 @@ const Navbar = () => {
                   </li>
                 </ul>
               )}
+              
             </li>
             <li className="navbar-user-dropdown">
               <button onClick={toggleDropdown} className="user-button">

@@ -7,6 +7,7 @@ import com.kinder_figurice.dto.TradeDto.TrgovinaNoStatusDto;
 import com.kinder_figurice.dto.TradeDto.TrgovinaPrikaz;
 import com.kinder_figurice.modeli.Trgovina;
 import com.kinder_figurice.servisi.TrgovinaServis;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
@@ -78,6 +79,7 @@ public class TrgovinaKontroler {
     }
 
 
+    @Transactional
     @PutMapping("/counter/{id}")
     public ResponseEntity<Trgovina> counterPonuda(
             @PathVariable Long id,

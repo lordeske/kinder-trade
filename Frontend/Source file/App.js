@@ -21,6 +21,7 @@ import JavniChat from './komponente/JavniChat';
 import PrivatniChat from './komponente/PrivatniChat';
 import KreirajTrgovinu from './komponente/KreirajTrgovinu';
 import MojeTrgovine from './komponente/MojeTrgovine';
+import KontraTrgovina from './komponente/KontraTrgovina';
 
 
 
@@ -54,6 +55,7 @@ function App() {
                 <Route path="/chat/:sagovornik" element={<PrivatniChat />} />
                 <Route path="/kreiraj-trgovinu/:korisnickoIme" element={ <KreirajTrgovinu /> }/>
                 <Route path="/moje-trgovine" element={ <MojeTrgovine   /> }/>
+                <Route path="/kreiraj-kontra-trgovinu/:idTrgovine/:korisnickoIme" element={ <KontraTrgovina   /> }/>
               </Routes>
             </div>
           }

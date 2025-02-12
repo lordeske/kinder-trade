@@ -247,6 +247,8 @@ public class TrgovinaServis {
         trgovina.setPrimalac(noviPrimalac);
         trgovina.setPosiljalac(noviPosiljalac);
 
+        trgovinaFiguriceRepo.deleteAllByTrgovina(trgovina);
+
         trgovina.getFigurice().clear();
         trgovina.getFigurice().addAll(ponudjeneTrgovinaFigurice);
         trgovina.getFigurice().addAll(trazeneTrgovinaFigurice);
