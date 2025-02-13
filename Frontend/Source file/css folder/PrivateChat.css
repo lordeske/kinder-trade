@@ -1,4 +1,6 @@
 
+@import url("https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600&display=swap");
+
 
 
 .privatni-chat-container {
@@ -8,6 +10,7 @@
     background: #eef5fc;
     border-radius: 10px;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    font-family: "Syne", sans-serif;
 }
 
 .privatni-chat-naslov {

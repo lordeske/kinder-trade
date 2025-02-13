@@ -1,3 +1,6 @@
+@import url("https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600&display=swap");
+
+
 .javni-chat-container {
     font-family: Arial, sans-serif;
     margin: 0 auto;
@@ -7,6 +10,7 @@
     border: 1px solid #ddd;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     padding: 20px;
+    font-family: "Syne", sans-serif;
   }
   
   .javni-chat-title {
@@ -67,7 +71,7 @@
   
   .javni-chat-send-button {
     padding: 10px 20px;
-    background-color: #007bff;
+    background-color: #218838;
     color: #fff;
     border: none;
     border-radius: 4px;

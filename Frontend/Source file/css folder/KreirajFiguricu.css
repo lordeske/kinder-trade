@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600&display=swap");
+
 .kreiraj-figuricu-page {
     display: flex;
     flex-direction: column;
@@ -5,7 +7,8 @@
     padding: 20px;
     background-color: #f4f4f4;
     min-height: 100vh;
-    font-family: Arial, sans-serif;
+    font-family: "Syne", sans-serif;
+
 }
 
 .kreiraj-figuricu-page h1 {
@@ -40,7 +43,7 @@
 .kreiraj-figuricu-form input:focus,
 .kreiraj-figuricu-form textarea:focus,
 .kreiraj-figuricu-form select:focus {
-    border-color: #3498db;
+    border-color: #4CAF50;
     outline: none;
 }
 
@@ -48,7 +51,7 @@
     padding: 10px 20px;
     font-size: 16px;
     color: #fff;
-    background-color: #3498db;
+    background-color: #4CAF50;
     border: none;
     border-radius: 5px;
     cursor: pointer;

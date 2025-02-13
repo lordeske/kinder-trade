@@ -105,6 +105,19 @@ const ProfilKorisnika = () => {
     dobijPredlozeneKorisnike();
   }, [korisnickoIme]);
 
+
+  
+  const formatirajDatum = (datum) => {
+    const parsedDate = new Date(datum);
+    return isNaN(parsedDate)
+      ? 'Nevalidan datum'
+      : new Intl.DateTimeFormat('en', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+        }).format(parsedDate);
+  };
+
   return (
     <div className="profile-page">
       {/* Informacije o korisniku */}
@@ -122,26 +135,26 @@ const ProfilKorisnika = () => {
               className="profile-avatar"
             />
             <h2>{korisnik.korisnickoIme || 'Nepoznato korisničko ime'}</h2>
-            <p>{`Datum kreiranja: ${korisnik.datumKreiranja ? korisnik.datumKreiranja : 'Nepoznato'}`}</p>
-            
+            <p>{`Datum kreiranja: ${korisnik.datumKreiranja ? formatirajDatum(korisnik.datumKreiranja) : 'Nepoznato'}`}</p>
+            <br></br>
             {user && <button
               className="pocetna-button pocetna-button-primary"
               onClick={() => navigacija(`/kreiraj-recenziju/${korisnik.korisnickoIme}`)}
             >
               Dodaj recenziju
-            </button>}
+            </button>} <br></br><br></br>
             {user && <button
               className="pocetna-button pocetna-button-primary"
               onClick={() => navigacija(`/kreiraj-trgovinu/${korisnik.korisnickoIme}`)}
             >
               Zapocni Trade
-            </button>}
+            </button>}<br></br><br></br>
             {user && <button
               className="pocetna-button pocetna-button-primary"
               onClick={() => navigacija(`/chat/${korisnik.korisnickoIme}`)}
             >
               Poruka
-            </button>}
+            </button>}<br></br><br></br>
             
             <button
               className="pocetna-button pocetna-button-primary"

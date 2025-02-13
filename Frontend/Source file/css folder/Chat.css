@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600&display=swap");
+
 
 .chat-page-container {
   max-width: 600px;
@@ -7,6 +9,7 @@
   border: 1px solid #ddd;
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  font-family: "Syne", sans-serif;
 }
 
 .chat-page-header {

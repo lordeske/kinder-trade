@@ -1,3 +1,7 @@
+@import url("https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600&display=swap");
+
+
+
 .azuriraj-profil-page {
     display: flex;
     flex-direction: column;
@@ -5,7 +9,7 @@
     justify-content: center;
     height: 100vh;
     background-color: #f4f4f4;
-    font-family: Arial, sans-serif;
+    font-family: "Syne", sans-serif;
   }
   
   .azuriraj-profil-page h1 {
@@ -40,14 +44,14 @@
   }
   
   .azuriraj-profil-form input:focus {
-    border-color: #3498db;
+    border-color: #218838;
     outline: none;
   }
   
   .azuriraj-profil-form button {
     width: 100%;
     padding: 10px;
-    background-color: #3498db;
+    background-color: #218838;
     color: #fff;
     border: none;
     border-radius: 5px;

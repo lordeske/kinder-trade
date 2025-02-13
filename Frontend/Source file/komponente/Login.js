@@ -78,7 +78,7 @@ const Login = () => {
         <div className="login-page">
       <div className="container">
         <div className="login-box">
-          <div className="circle circle-one"></div>
+          
           <div className="form-box">
             <h1 className="title">Kreiraj profil</h1>
             <form onSubmit={kreirajProfil}>
@@ -117,7 +117,7 @@ const Login = () => {
             {!loading && poruka && <p className="message-success">{poruka}</p>}
             {!loading && greska && <p className="message-error">{greska}</p>}
           </div>
-          <div className="circle circle-two"></div>
+          
         </div>
         <div className="theme-btn-container"></div>
       </div>

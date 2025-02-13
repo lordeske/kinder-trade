@@ -52,6 +52,11 @@ const KontraTrgovina = () => {
     };
 
 
+    if(!user)
+    {
+        return;
+    }
+
     const handleKreirajTrgovinu = async () => {
         try {
             const trgovinaDto = {

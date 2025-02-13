@@ -33,12 +33,12 @@ const PrivatniChat = () => {
                 primalac: sagovornik,
                 sadrzajPoruke: newMessage,
             };
-
-            sendPrivateMessage(message);
-            setMessages((prevMessages) => [...prevMessages, message]);
+    
+            sendPrivateMessage(message);  // Samo šaljemo, ne dodajemo lokalno!
             setNewMessage("");
         }
     };
+    ;
 
     return (
         <div className="privatni-chat-container">

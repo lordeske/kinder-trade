@@ -1,3 +1,6 @@
+@import url("https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600&display=swap");
+
+
 .kreiraj-recenziju-page {
     max-width: 600px;
     margin: 20px auto;
@@ -7,6 +10,8 @@
     border-radius: 8px;
     font-family: Arial, sans-serif;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: "Syne", sans-serif;
+
   }
   
   .kreiraj-recenziju-page h1 {
