@@ -1,4 +1,4 @@
-inder Trade - Platforma za Razmenu Figurica 
+Kinder Trade - Platforma za Razmenu Figurica 
 Kinder Trade je moderna web aplikacija namenjena kolekcionarima figurica koji žele da trguju, razmenjuju i komuniciraju sa drugim kolekcionarima. Platforma omogućava lako kreiranje trgovina, slanje ponuda i pregovaranje putem kontra ponuda.
 
 Funkcionalnosti
